@@ -20,7 +20,7 @@ The following is mostly a way to remember the process.
 
 Get the latest sources from GitHub
 ```sh
-$ git clone -b master git://github.com/urho3d/Urho3D
+$ git clone -b master https://github.com/urho3d/Urho3D
 ```
 or download and extract the latest stable release (currently 1.7.1).  
 If you get compilation errors when building the master branch, use the latest stable release.
@@ -28,7 +28,7 @@ If you get compilation errors when building the master branch, use the latest st
 Assuming the following folders:
 - <URHO3D_SOURCE> : the folder where the library sources are extracted (e.g. ~/Urho3D)
 - <URHO3D_INSTALL> : the folder where the library will be installed (e.g. ~/Libs/Urho3D)
-
+___
 - Linux
 ```sh
 $ cd <URHO3D_SOURCE>
@@ -48,7 +48,7 @@ I didn't installed the following ones:
 - libXi-devel - X11 input extension library
 - libXinerama-devel
 - libXScrnSaver-devel
-
+___
 - MinGW
 ```sh
 $ cd <URHO3D_SOURCE>
@@ -60,7 +60,7 @@ $ mingw32-make install
 ```
 
 If the MinGW binaries are in the PATH environment variable, the MINGW_PREFIX should not be used.
-
+___
 - Visual Studio 2012
 ```sh
 $ cd <URHO3D_SOURCE>
@@ -70,7 +70,7 @@ $ cmake ../ -G"Visual Studio 11 2012" -DVS=11 -DURHO3D_LIB_TYPE=SHARED -DCMAKE_I
 $ cmake --build . --target ALL_BUILD --config Release
 $ cmake --build . --target INSTALL --config Release
 ```
-
+___
 If the library builds and installs correctly, the folder <URHO3D_SOURCE> can now be deleted.  
 If you plan to use the library yourself, don't delete it. The source code is great documentation.
 
@@ -81,7 +81,7 @@ Assuming the following folders:
 
 Clone the project to the local hard drive.
 ```sh
-$ git clone -b master git://gitlab.com/pflat/Game01
+$ git clone -b master https://gitlab.com/pflat/Game01
 ```
 
 Build and install the demo

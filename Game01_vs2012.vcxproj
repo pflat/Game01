@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug - Shared|Win32">
+      <Configuration>Debug - Shared</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release - Shared|Win32">
+      <Configuration>Release - Shared</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release - Static|Win32">
+      <Configuration>Release - Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Game01.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\CameraCtrl.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\DynamicCharacterCtrl.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\KinematicCharacterCtrl.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\SpaceshipCtrl.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\VehicleCtrlSystem.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\VehicleWeaponCtrl.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\WheeledVehicleCtrl.cpp" />
+    <ClCompile Include="Source\Toybox\Core\Debug.cpp" />
+    <ClCompile Include="Source\Toybox\Core\Toybox.cpp" />
+    <ClCompile Include="Source\Toybox\Engine\Scene.cpp" />
+    <ClCompile Include="Source\Toybox\Input\InputState.cpp" />
+    <ClCompile Include="Source\Toybox\Math\Vector3Ext.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Game01.h" />
+    <ClInclude Include="Source\Settings.h" />
+    <ClInclude Include="Source\Toybox\Controllers\CameraCtrl.h" />
+    <ClInclude Include="Source\Toybox\Controllers\DynamicCharacterCtrl.h" />
+    <ClInclude Include="Source\Toybox\Controllers\KinematicCharacterCtrl.h" />
+    <ClInclude Include="Source\Toybox\Controllers\KinematicCharControls.h" />
+    <ClInclude Include="Source\Toybox\Controllers\KinematicCharState.h" />
+    <ClInclude Include="Source\Toybox\Controllers\SpaceshipCtrl.h" />
+    <ClInclude Include="Source\Toybox\Controllers\VehicleCtrlSystem.h" />
+    <ClInclude Include="Source\Toybox\Controllers\VehicleWeaponCtrl.h" />
+    <ClInclude Include="Source\Toybox\Controllers\WheeledVehicleCtrl.h" />
+    <ClInclude Include="Source\Toybox\Core\Debug.h" />
+    <ClInclude Include="Source\Toybox\Core\IncGuards.h" />
+    <ClInclude Include="Source\Toybox\Core\Settings.h" />
+    <ClInclude Include="Source\Toybox\Core\Toybox.h" />
+    <ClInclude Include="Source\Toybox\Engine\Scene.h" />
+    <ClInclude Include="Source\Toybox\Input\InputState.h" />
+    <ClInclude Include="Source\Toybox\Math\Vector3Ext.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{87294E44-17B1-462E-AF98-32AC0FB48A6C}</ProjectGuid>
+    <RootNamespace>Game01</RootNamespace>
+    <ProjectName>Game01</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Shared|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - Shared|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - Static|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug - Shared|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release - Shared|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release - Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Shared|Win32'">
+    <IncludePath>$(URHO3D_VS11_SHARED)\include;$(URHO3D_VS11_SHARED)\include\Urho3D\ThirdParty;$(URHO3D_VS11_SHARED)\include\Urho3D\ThirdParty\Bullet;$(URHO3D_VS11_SHARED)\include\Urho3D\ThirdParty\Lua;$(IncludePath)</IncludePath>
+    <LibraryPath>$(URHO3D_VS11_SHARED)\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(ProjectDir)bin\vs11\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\vs11\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - Shared|Win32'">
+    <OutDir>$(ProjectDir)bin\vs11\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\vs11\$(Configuration)\</IntDir>
+    <IncludePath>$(URHO3D_VS11_SHARED)\include;$(URHO3D_VS11_SHARED)\include\Urho3D\ThirdParty;$(URHO3D_VS11_SHARED)\include\Urho3D\ThirdParty\Bullet;$(URHO3D_VS11_SHARED)\include\Urho3D\ThirdParty\Lua;$(IncludePath)</IncludePath>
+    <LibraryPath>$(URHO3D_VS11_SHARED)\lib;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release - Static|Win32'">
+    <OutDir>$(ProjectDir)bin\vs11\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)obj\vs11\$(Configuration)\</IntDir>
+    <IncludePath>$(URHO3D_VS11_STATIC)\include;$(URHO3D_VS11_STATIC)\include\Urho3D\ThirdParty;$(URHO3D_VS11_STATIC)\include\Urho3D\ThirdParty\Bullet;$(URHO3D_VS11_STATIC)\include\Urho3D\ThirdParty\Lua;$(IncludePath)</IncludePath>
+    <LibraryPath>$(URHO3D_VS11_STATIC)\lib;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug - Shared|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>
+      </SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>urho3d.lib;user32.lib;gdi32.lib;winmm.lib;imm32.lib;ole32.lib;oleaut32.lib;version.lib;uuid.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d9.lib;kernel32.lib;winspool.lib;shell32.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>true</ImageHasSafeExceptionHandlers>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(URHO3D_VS11_SHARED)\bin\Urho3D.dll" "$(OutDir)"
+copy "$(URHO3D_VS11_SHARED)\bin\d3dcompiler_46.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release - Shared|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>
+      </SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SECURE_SCL=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>urho3d.lib;user32.lib;gdi32.lib;winmm.lib;imm32.lib;ole32.lib;oleaut32.lib;version.lib;uuid.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d9.lib;kernel32.lib;winspool.lib;shell32.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(URHO3D_VS11_SHARED)\bin\Urho3D.dll" "$(OutDir)"
+copy "$(URHO3D_VS11_SHARED)\bin\d3dcompiler_46.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release - Static|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>
+      </SDLCheck>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SECURE_SCL=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>urho3d.lib;user32.lib;gdi32.lib;winmm.lib;imm32.lib;ole32.lib;oleaut32.lib;version.lib;uuid.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d9.lib;kernel32.lib;winspool.lib;shell32.lib;comdlg32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(URHO3D_VS11_STATIC)\bin\d3dcompiler_46.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

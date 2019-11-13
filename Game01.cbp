@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Game01" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug - Shared">
+				<Option output="bin/gcc/Debug - Shared/Game01" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/gcc/Debug - Shared/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-Wno-invalid-offsetof" />
+					<Add option="-march=native" />
+					<Add option="-fno-keep-inline-dllexport" />
+					<Add option="-fdiagnostics-color=auto" />
+					<Add option="-DDEBUG" />
+					<Add option="-D_DEBUG" />
+					<Add directory="$(#urho3d_shared.include)" />
+					<Add directory="$(#urho3d_shared.include)/Urho3D/ThirdParty" />
+					<Add directory="$(#urho3d_shared.include)/Urho3D/ThirdParty/Bullet" />
+					<Add directory="$(#urho3d_shared.include)/Urho3D/ThirdParty/Lua" />
+				</Compiler>
+				<Linker>
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add library="Urho3D.dll" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winmm" />
+					<Add library="imm32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="version" />
+					<Add library="uuid" />
+					<Add library="ws2_32" />
+					<Add library="opengl32" />
+					<Add directory="$(#urho3d_shared.lib)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after='cmd /c copy /Y &quot;$(#urho3d_shared.bin)\Urho3D.dll&quot; &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_DIR)&quot;' />
+				</ExtraCommands>
+			</Target>
+			<Target title="Debug - Static">
+				<Option output="bin/gcc/Debug - Static/Game01" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/gcc/Debug - Static/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-Wno-invalid-offsetof" />
+					<Add option="-march=native" />
+					<Add option="-fno-keep-inline-dllexport" />
+					<Add option="-fdiagnostics-color=auto" />
+					<Add option="-DDEBUG" />
+					<Add option="-D_DEBUG" />
+					<Add option="-DURHO3D_STATIC_DEFINE" />
+					<Add directory="$(#urho3d_static.include)" />
+					<Add directory="$(#urho3d_static.include)/Urho3D/ThirdParty" />
+					<Add directory="$(#urho3d_static.include)/Urho3D/ThirdParty/Bullet" />
+					<Add directory="$(#urho3d_static.include)/Urho3D/ThirdParty/Lua" />
+				</Compiler>
+				<Linker>
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add library="Urho3D" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winmm" />
+					<Add library="imm32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="version" />
+					<Add library="uuid" />
+					<Add library="ws2_32" />
+					<Add library="opengl32" />
+					<Add directory="$(#urho3d_static.lib)" />
+				</Linker>
+			</Target>
+			<Target title="Release - Shared">
+				<Option output="bin/gcc/Release - Shared/Game01" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/gcc/Release - Shared/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-Wno-invalid-offsetof" />
+					<Add option="-march=native" />
+					<Add option="-fno-keep-inline-dllexport" />
+					<Add option="-fdiagnostics-color=auto" />
+					<Add option="-DNDEBUG" />
+					<Add directory="$(#urho3d_shared.include)" />
+					<Add directory="$(#urho3d_shared.include)/Urho3D/ThirdParty" />
+					<Add directory="$(#urho3d_shared.include)/Urho3D/ThirdParty/Bullet" />
+					<Add directory="$(#urho3d_shared.include)/Urho3D/ThirdParty/Lua" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add library="Urho3D.dll" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winmm" />
+					<Add library="imm32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="version" />
+					<Add library="uuid" />
+					<Add library="ws2_32" />
+					<Add library="opengl32" />
+					<Add directory="$(#urho3d_shared.lib)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after='cmd /c copy /Y &quot;$(#urho3d_shared.bin)\Urho3D.dll&quot; &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_DIR)&quot;' />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release - Static">
+				<Option output="bin/gcc/Release - Static/Game01" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/gcc/Release - Static/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-Wno-invalid-offsetof" />
+					<Add option="-march=native" />
+					<Add option="-fno-keep-inline-dllexport" />
+					<Add option="-fdiagnostics-color=auto" />
+					<Add option="-DNDEBUG" />
+					<Add option="-DURHO3D_STATIC_DEFINE" />
+					<Add directory="$(#urho3d_static.include)" />
+					<Add directory="$(#urho3d_static.include)/Urho3D/ThirdParty" />
+					<Add directory="$(#urho3d_static.include)/Urho3D/ThirdParty/Bullet" />
+					<Add directory="$(#urho3d_static.include)/Urho3D/ThirdParty/Lua" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add library="Urho3D" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winmm" />
+					<Add library="imm32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="version" />
+					<Add library="uuid" />
+					<Add library="ws2_32" />
+					<Add library="opengl32" />
+					<Add directory="$(#urho3d_static.lib)" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="Source/Game01.cpp" />
+		<Unit filename="Source/Game01.h" />
+		<Unit filename="Source/Settings.h" />
+		<Unit filename="Source/Toybox/Controllers/CameraCtrl.cpp" />
+		<Unit filename="Source/Toybox/Controllers/CameraCtrl.h" />
+		<Unit filename="Source/Toybox/Controllers/DynamicCharacterCtrl.cpp" />
+		<Unit filename="Source/Toybox/Controllers/DynamicCharacterCtrl.h" />
+		<Unit filename="Source/Toybox/Controllers/KinematicCharControls.h" />
+		<Unit filename="Source/Toybox/Controllers/KinematicCharState.h" />
+		<Unit filename="Source/Toybox/Controllers/KinematicCharacterCtrl.cpp" />
+		<Unit filename="Source/Toybox/Controllers/KinematicCharacterCtrl.h" />
+		<Unit filename="Source/Toybox/Controllers/SpaceshipCtrl.cpp" />
+		<Unit filename="Source/Toybox/Controllers/SpaceshipCtrl.h" />
+		<Unit filename="Source/Toybox/Controllers/VehicleCtrlSystem.cpp" />
+		<Unit filename="Source/Toybox/Controllers/VehicleCtrlSystem.h" />
+		<Unit filename="Source/Toybox/Controllers/VehicleWeaponCtrl.cpp" />
+		<Unit filename="Source/Toybox/Controllers/VehicleWeaponCtrl.h" />
+		<Unit filename="Source/Toybox/Controllers/WheeledVehicleCtrl.cpp" />
+		<Unit filename="Source/Toybox/Controllers/WheeledVehicleCtrl.h" />
+		<Unit filename="Source/Toybox/Core/Debug.cpp" />
+		<Unit filename="Source/Toybox/Core/Debug.h" />
+		<Unit filename="Source/Toybox/Core/IncGuards.h" />
+		<Unit filename="Source/Toybox/Core/Settings.h" />
+		<Unit filename="Source/Toybox/Core/Toybox.cpp" />
+		<Unit filename="Source/Toybox/Core/Toybox.h" />
+		<Unit filename="Source/Toybox/Engine/Scene.cpp" />
+		<Unit filename="Source/Toybox/Engine/Scene.h" />
+		<Unit filename="Source/Toybox/Input/InputState.cpp" />
+		<Unit filename="Source/Toybox/Input/InputState.h" />
+		<Unit filename="Source/Toybox/Math/Vector3Ext.cpp" />
+		<Unit filename="Source/Toybox/Math/Vector3Ext.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,26 @@
+# C++ build directories
+/bin
+/obj
+
+# Code::Blocks project settings
+#/*.cbp
+/*.depend
+/*.layout
+
+# VisualStudio project settings
+#/*.vcxproj
+#/*.vcxproj.filters
+/*.vcxproj.user
+
+# CMake files
+CMakeCache.txt
+/build
+
+# Misc.
+/Screenshots
+/backups
+.DS_Store
+*.log
+*.bak
+*.blend1
+Thumbs.db

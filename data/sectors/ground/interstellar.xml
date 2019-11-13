@@ -1,0 +1,7 @@
+<sector id="interstellar" name="Interstellar">
+	<skybox model="models/skybox/skybox.mdl"
+		material="materials/skyboxes/interstellar.xml" />
+	<music name="music/ambient/observing_the_star.ogg" />
+	<ambient color="0.6 0.6 0.9" />
+	<fog color="0.4 0.5 0.8" start="32.0" end="256.0" />
+</sector>

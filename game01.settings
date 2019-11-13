@@ -1,0 +1,32 @@
+<game01>
+	<display
+		width = "1024"
+		height = "600"
+		fullscreen = "false"
+	/>
+	<camera
+		key_sensitivity = "20.0"
+		mouse_sensitivity = "20.0"
+		smooth = "true"
+		reset_time = "0.2"
+		target_time = "0.2">
+		<vehicle
+			invert_pitch = "false"
+			default_pitch = "10"
+			default_yaw = "0"
+			default_distance = "30"
+		/>
+		<character
+			invert_pitch = "false"
+			default_pitch = "5"
+			default_yaw = "0"
+			default_distance = "3"
+		/>
+		<free
+			invert_pitch = "false"
+			default_pitch = "10"
+			default_yaw = "0"
+			default_distance = "30"
+		/>
+	</camera>
+</game01>

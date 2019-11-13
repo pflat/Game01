@@ -1,0 +1,7 @@
+<character id="julia" name="Julia">
+	<mass value="60" />
+	<model type="animated"
+		model="models/characters/human/julia.mdl"
+		material="materials/characters/human/julia.xml"
+		shadows="1" />
+</character>

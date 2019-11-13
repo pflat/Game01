@@ -1,0 +1,9 @@
+<cubemap>
+	<face name="corona+x.dds" />
+	<face name="corona-x.dds" />
+	<face name="corona+y.dds" />
+	<face name="corona-y.dds" />
+	<face name="corona+z.dds" />
+	<face name="corona-z.dds" />
+	<quality low="0" />
+</cubemap>

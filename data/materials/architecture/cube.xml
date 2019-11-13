@@ -1,0 +1,5 @@
+<material>
+	<technique name="Techniques/Diff.xml"/>
+	<texture name="textures/terrain/sand1.dds" unit="diffuse"/>
+	<parameter name="MatDiffColor" value="0.64 0.64 0.64 1"/>
+</material>

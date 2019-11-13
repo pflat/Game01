@@ -1,0 +1,18 @@
+<sector id="corona" name="Corona">
+	<skybox model="models/skybox/skybox.mdl"
+		material="materials/skyboxes/corona.xml" />
+	<music name="music/ambient/galactic_temple.ogg" />
+	<ambient color="0.9 0.9 0.9" />
+	<ships>
+		<ship id="fighter_a01">
+			<position value="-10.0 0.0 10.0" />
+			<rotation value="0.0 0.0 0.0" />
+			<scale value="1.0 1.0 1.0" />
+		</ship>
+		<ship id="fighter_a02">
+			<position value="10.0 0.0 10.0" />
+			<rotation value="0.0 0.0 0.0" />
+			<scale value="1.0 1.0 1.0" />
+		</ship>
+	</ships>
+</sector>

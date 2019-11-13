@@ -1,0 +1,9 @@
+<cubemap>
+	<face name="interstellar+x.dds" />
+	<face name="interstellar-x.dds" />
+	<face name="interstellar+y.dds" />
+	<face name="interstellar-y.dds" />
+	<face name="interstellar+z.dds" />
+	<face name="interstellar-z.dds" />
+	<quality low="0" />
+</cubemap>

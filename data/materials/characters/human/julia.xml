@@ -1,0 +1,10 @@
+<material>
+	<technique name="Techniques/DiffNormal.xml"/>
+	<texture name="textures/characters/human/julia_d.dds" unit="diffuse"/>
+	<texture name="textures/characters/human/julia_n.dds" unit="normal"/>
+	<parameter name="MatDiffColor" value="0.64 0.64 0.64 1"/>
+	<parameter name="MatSpecColor" value="0.5 0.5 0.5 50"/>
+	<cull value="ccw" />
+	<lineantialias enable="true" />
+	<occlusion enable="false" />
+</material>

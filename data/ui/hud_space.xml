@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<element>
+	<attribute name="Name" value="ctnMain" />
+	<attribute name="Size" value="1024 600" />
+	<attribute name="Max Anchor" value="1 1" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Enable Anchor" value="true" />
+	<element type="Text">
+		<attribute name="Name" value="lblSpeed" />
+		<attribute name="Position" value="10 10" />
+		<attribute name="Max Anchor" value="0.2 0" />
+		<attribute name="Min Offset" value="10 10" />
+		<attribute name="Max Offset" value="10 10" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Font" value="Font;fonts/baloo-regular.ttf" />
+		<attribute name="Text" value="TXT_SPEED" />
+	</element>
+	<!--element type="Text">
+		<attribute name="Name" value="lblHelp" />
+		<attribute name="Position" value="10 10" />
+		<attribute name="Min Anchor" value="0 0.75" />
+		<attribute name="Max Anchor" value="1 1" />
+		<attribute name="Min Offset" value="10 10" />
+		<attribute name="Max Offset" value="10 10" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Font" value="Font;fonts/baloo-regular.ttf" />
+		<attribute name="Text" value="W/S - Ship pitch      A/S - Ship yaw      Q/E - Ship roll&#10;Keypad+ / Keypad- Ship speed      TAB - Full speed      BACKSPACE - Stop&#10;Mouse move + RMB - Move camera      Mouse wheel - Zoom camera&#10;PageUp/PageDown - Change ship&#10;ESC - Exit" />
+		<attribute name="Text Alignment" value="Center" />
+	</element-->
+</element>

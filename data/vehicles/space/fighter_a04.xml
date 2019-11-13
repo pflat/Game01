@@ -1,0 +1,64 @@
+<spaceship id="fighter_a04" name="Hornet">
+    <class value="fighter" />
+	<mass value="40000" />
+	<damp linear="0.95" angular="0.95" friction="0.95" />
+	<thrust step="50.0" min="-1000.0" max="3000.0" damp="50.0" />
+	<pitch step="0.2" min="-1.5" max="1.5" damp="0.1" />
+    <yaw step="0.2" min="-1.5" max="1.5" damp="0.1" />
+    <roll step="0.1" min="-1.0" max="1.0" damp="0.1" />
+
+	<model type="static"
+		model="models/vehicles/space/fighter_a04/fighter_a04.mdl"
+		material="materials/vehicles/space/fighter_a04.xml"
+		collision="models/vehicles/space/fighter_a04/collision.mdl"
+		shadows="1" />
+
+    <node name="nExhausts">
+        <position value="0.0000004711068868 0.0000000000000000 -3.1199998855590820" />
+        <rotation value="-0.0000000000000000 -179.9999913485779928 0.0000000000000000" />
+        <scale value="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+		<sound value="sfx/engine_large_01.wav" />
+        <node name="nExhaust01">
+            <position value="0.0000000000000000 0.9399999976158142 0.0000000000000000" />
+            <rotation value="-0.0000000000000000 -0.0000000000000000 0.0000000000000000" />
+            <scale value="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+			<effect value="effects/exhaust_blue_02.xml" type="particle" />
+        </node>
+        <node name="nExhaust02">
+            <position value="0.0000000000000000 -0.9399999976158142 0.0000000000000000" />
+            <rotation value="-0.0000000000000000 -0.0000000000000000 0.0000000000000000" />
+            <scale value="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+			<effect value="effects/exhaust_blue_02.xml" type="particle" />
+        </node>
+    </node>
+    <node name="nPilot">
+        <position value="0.0017531752819195 -0.3610932826995850 2.4867517948150635" />
+        <rotation value="-0.0000000000000000 -0.0000000000000000 0.0000000000000000" />
+        <scale value="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+    </node>
+    <node name="nSlots">
+        <position value="0.0000000000000000 0.0000000000000000 -0.5000000000000000" />
+        <rotation value="-0.0000000000000000 -0.0000000000000000 0.0000000000000000" />
+        <scale value="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+        <node name="nSlot01">
+            <position value="-2.3182306289672852 0.1623379588127136 -1.0094586610794067" />
+            <rotation value="-0.7942874476966901 -0.1789989943621489 -165.7687184769661428" />
+            <scale value="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+        </node>
+        <node name="nSlot02">
+            <position value="2.3182325363159180 0.1623379588127136 -1.0094566345214844" />
+            <rotation value="-0.7952912187004175 0.1830142918204702 165.7688277599928597" />
+            <scale value="-1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+        </node>
+        <node name="nSlot03">
+            <position value="-0.9138432741165161 -0.1817747950553894 1.4658329486846924" />
+            <rotation value="0.0001535191867942 -0.0001870637782651 101.2500480675411865" />
+            <scale value="0.9999998807907104 0.9999998807907104 1.0000000000000000" />
+        </node>
+        <node name="nSlot04">
+            <position value="0.9138423204421997 -0.1817747950553894 1.4658336639404297" />
+            <rotation value="-0.0001178811849688 -0.0001436386093567 -101.2500070864061712" />
+            <scale value="-0.9999998807907104 0.9999998807907104 1.0000000000000000" />
+        </node>
+    </node>
+</spaceship>

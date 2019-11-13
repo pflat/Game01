@@ -1,0 +1,9 @@
+<material>
+	<technique name="Techniques/DiffNormalEmissive.xml"/>
+	<texture name="textures/vehicles/space/fighter_a02/fighter_a02_d.dds" unit="diffuse"/>
+	<texture name="textures/vehicles/space/fighter_a02/fighter_a02_n.dds" unit="normal"/>
+	<texture name="textures/vehicles/space/fighter_a02/fighter_a02_e.dds" unit="emissive"/>
+	<parameter name="MatDiffColor" value="0.64 0.64 0.64 1"/>
+	<parameter name="MatSpecColor" value="0.5 0.5 0.5 50"/>
+	<parameter name="MatEmissiveColor" value="0 0 0"/>
+</material>

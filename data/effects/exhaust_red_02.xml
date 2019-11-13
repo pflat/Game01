@@ -1,0 +1,26 @@
+<particleeffect>
+	<material name="materials/effects/particle_flare.xml" />
+	<numparticles value="80" />
+	<updateinvisible enable="false" />
+	<relative enable="false" />
+	<scaled enable="true" />
+	<sorted enable="false" />
+	<animlodbias value="0" />
+	<emittertype value="Sphere" />
+	<emittersize value="0 0 0" />
+	<direction min="-0.1 -0.1 0.1" max="0.1 0.1 0.1" />
+	<constantforce value="0 0 0" />
+	<dampingforce value="0" />
+	<activetime value="0" />
+	<inactivetime value="0" />
+	<emissionrate min="6" max="10" />
+	<particlesize min="0.35 0.35" max="0.4 0.4" />
+	<timetolive min="0.05" max="0.1" />
+	<velocity min="0.5" max="1.0" />
+	<rotation min="0" max="0" />
+	<rotationspeed min="0" max="0" />
+	<sizedelta add="0" mul="0.5" />
+	<colorfade color="1.0 1.0 1.0 1.0" time="0.0" />
+	<colorfade color="0.9568 0.2196 0.2196 1.0" time="0.2" />
+	<colorfade color="0.9568 0.2196 0.2196 1.0" time="1.0" />
+</particleeffect>

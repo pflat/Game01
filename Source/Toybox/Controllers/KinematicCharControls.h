@@ -19,6 +19,7 @@ public:
         rotation_(0.0f),
         direction_(Urho3D::Vector3::ZERO)
     {
+
     }
 
     void Update(InputState* input)
@@ -26,8 +27,8 @@ public:
         const float FORWARD_SPEED = 10.0f;
         const float BACKWARD_SPEED = 5.0f;
         const float STRAFE_SPEED = 7.0f;
-        const float JUMP_SPEED = 150.0f;
-        const float ROTATION_SPEED = 2.0f;
+        const float JUMP_SPEED = 7.0f;
+        const float ROTATION_SPEED = 5.0f;
         const float WALK_FACTOR = 0.25f;
 
         // -------------------------------
@@ -119,6 +120,8 @@ public:
             forward_vel_ *= WALK_FACTOR;
             strafe_vel_ *= WALK_FACTOR;
         }
+
+        // -------------------------------
     }
 
 public:

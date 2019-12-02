@@ -44,6 +44,7 @@ class Game01 : public Urho3D::Application
 	Urho3D::WeakPtr<Urho3D::Node> terrain_node;
     Urho3D::WeakPtr<Urho3D::CollisionShape> cube_shape1;
     Urho3D::WeakPtr<Urho3D::CollisionShape> cube_shape2;
+    Urho3D::WeakPtr<Urho3D::CollisionShape> cube_shape3;
 
 public:
 

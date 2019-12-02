@@ -8,7 +8,7 @@ namespace Toybox
 
 void PrintMessage(unsigned frame, const Urho3D::String& message)
 {
-    printf("%d %s\n", frame, message.CString());
+    printf("%d - %s\n", frame, message.CString());
 }
 
 

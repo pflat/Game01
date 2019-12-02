@@ -93,7 +93,7 @@ void Game01::Start()
 
     CreateSpaceScene();
 	CreateGroundScene();
-    
+
 	//  Set camera
     camera = Toybox::CreateCamera(context_);
     GetSubsystem<Urho3D::Audio>()->SetListener(camera->GetLookAtNode()->GetComponent<Urho3D::SoundListener>());
@@ -239,7 +239,7 @@ void Game01::LoadSettings(const Urho3D::String& file_name)
 
 			if (xml_elem3.HasAttribute("default_distance"))
 				SetGlobalVar("camera.free.default_distance", xml_elem3.GetFloat("default_distance"));
-		} 
+		}
     }
 }
 
@@ -281,7 +281,7 @@ void Game01::CreateSpaceScene()
     //ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship3));
 	//ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship4));
 	//ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship5));
-	
+
 	//ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship1));
 	ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship2));
     //ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship3));
@@ -416,7 +416,7 @@ void Game01::CreateGroundScene()
 //----------------------------------------------------------
 //----------------------------------------------------------
     Urho3D::Node* cube_node1 = scene_ground->CreateChild("cube1");
-    cube_node1->SetPosition(Urho3D::Vector3(20.0f, 2.0f, 25.0f));
+    cube_node1->SetPosition(Urho3D::Vector3(20.0f, 1.8f, 25.0f));
 
     Urho3D::StaticModel* cube_model1 = cube_node1->CreateComponent<Urho3D::StaticModel>();
     cube_model1->SetModel(cache->GetResource<Urho3D::Model>("models/architecture/cube/cube.mdl"));
@@ -431,7 +431,7 @@ void Game01::CreateGroundScene()
 //----------------------------------------------------------
 //----------------------------------------------------------
     Urho3D::Node* cube_node2 = scene_ground->CreateChild("cube2");
-    cube_node2->SetPosition(Urho3D::Vector3(20.0f, 8.0f, 25.0f));
+    cube_node2->SetPosition(Urho3D::Vector3(20.0f, 4.8f, 25.0f));
 
     Urho3D::StaticModel* cube_model2 = cube_node2->CreateComponent<Urho3D::StaticModel>();
     cube_model2->SetModel(cache->GetResource<Urho3D::Model>("models/architecture/cube/cube.mdl"));
@@ -445,12 +445,29 @@ void Game01::CreateGroundScene()
     cube_shape2->SetTriangleMesh(cache->GetResource<Urho3D::Model>("models/architecture/cube/collision.mdl"));
 //----------------------------------------------------------
 //----------------------------------------------------------
+    Urho3D::Node* cube_node3 = scene_ground->CreateChild("cube3");
+    cube_node3->SetPosition(Urho3D::Vector3(25.0f, 1.8f, 30.0f));
+    cube_node3->SetRotation(Urho3D::Quaternion(-75.0f, 0.0f, 0.0f));
+
+    Urho3D::StaticModel* cube_model3 = cube_node3->CreateComponent<Urho3D::StaticModel>();
+    cube_model3->SetModel(cache->GetResource<Urho3D::Model>("models/architecture/cube/cube.mdl"));
+    cube_model3->SetMaterial(cache->GetResource<Urho3D::Material>("materials/architecture/cube.xml"));
+    cube_model3->SetCastShadows(true);
+
+    Urho3D::RigidBody* cube_body3 = cube_node3->CreateComponent<Urho3D::RigidBody>();
+    cube_body3->SetCollisionLayer(Toybox::CL_STATIC);
+    cube_body3->SetMass(0.0f);
+    /*Urho3D::CollisionShape**/ cube_shape3 = cube_node3->CreateComponent<Urho3D::CollisionShape>();
+    cube_shape3->SetTriangleMesh(cache->GetResource<Urho3D::Model>("models/architecture/cube/collision.mdl"));
+//----------------------------------------------------------
+//----------------------------------------------------------
 
     if (CHAR_CONTROLLER == Toybox::CHAR_CONTROLLER_KINEMATIC)
     {
         kJulia = Toybox::LoadKinematicCharacter("characters/human/julia.xml", scene_ground, cache);
         //kJulia->GetNode()->SetPosition(Urho3D::Vector3(0.0f, 35.04f, 0.0f));
-        kJulia->GetNode()->SetPosition(Urho3D::Vector3(20.0f, 5.0f, 25.0f));
+        kJulia->GetNode()->SetPosition(Urho3D::Vector3(20.0f, 3.0f, 25.0f));
+        //kJulia->GetNode()->SetPosition(Urho3D::Vector3(21.518015f, 2.433016f, 22.795750f));
         //kJulia->GetNode()->SetPosition(Urho3D::Vector3(15.0f, 5.2f, 25.0f));
         //PrintNodeTree(0, kJulia->GetNode());
         //kJulia->GetNode()->SetRotation(Urho3D::Quaternion(0.0f, 0.0f, 15.0f));
@@ -821,6 +838,7 @@ void Game01::HandlePostRenderUpdate(Urho3D::StringHash event_type, Urho3D::Varia
 
             cube_shape1->DrawDebugGeometry(scene_ground->GetComponent<Urho3D::DebugRenderer>(), true);
             cube_shape2->DrawDebugGeometry(scene_ground->GetComponent<Urho3D::DebugRenderer>(), true);
+            cube_shape3->DrawDebugGeometry(scene_ground->GetComponent<Urho3D::DebugRenderer>(), true);
 /*
             Urho3D::Terrain* t = scene_ground->GetComponent<Urho3D::Terrain>(true);
             if (t)

@@ -1,24 +1,10 @@
 #include "../Controllers/KinematicCharacterCtrl.h"
 #include "../Math/Vector3Ext.h"
 #include "../Core/Settings.h"
-#include "../Core/Debug.h"
+//#include "../Core/Debug.h"
 
 THIRD_PARTY_GUARDS_BEGIN
-//#include <Urho3D/IO/MemoryBuffer.h>
-//#include <Urho3D/Math/Ray.h>
-//#include <Urho3D/Math/MathDefs.h>
-//#include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Physics/PhysicsWorld.h>
-#include <Urho3D/Physics/PhysicsEvents.h>
-
-//#include <Bullet/BulletCollision/BroadphaseCollision/btDbvtBroadphase.h>
-//#include <Bullet/BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h>
-//#include <Bullet/BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
-//#include <Bullet/BulletCollision/CollisionShapes/btBoxShape.h>
-//#include <Bullet/BulletCollision/CollisionShapes/btSphereShape.h>
-#include <Bullet/BulletCollision/CollisionShapes/btCapsuleShape.h>
-//#include <Bullet/BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
-//#include <Bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
+//  ...
 THIRD_PARTY_GUARDS_END
 
 
@@ -28,27 +14,25 @@ namespace Toybox
 KinematicCharacterCtrl::KinematicCharacterCtrl(Urho3D::Context* context) :
     Urho3D::LogicComponent(context),
 
-    spring_cast_length(5.0f),
-
-    gravity_(0.0f),
-    jump_strength_(0.0f),
-    slope_factor_(Urho3D::Cos(45.0f)),
-
-    capsule_height_(0.0f),
-    capsule_diameter_(0.0f),
     spring_height_(0.0f),
-    spring_diameter_(0.0f),
+    spring_cast_length_(5.0f),
+    gravity_(0.0f),
 
-    air_time(0.0f),
-    down_vel(0.0f),
-
-    ground_velocity(Urho3D::Vector3::ZERO),
-    air_velocity(Urho3D::Vector3::ZERO),
-
-//    body(0),
-    coll_shape(0),
-    animation_ctrl(0),
-    camera_node(0),
+    forward_speed_(0.0f),
+    back_speed_(0.0f),
+    strafe_speed_(0.0f),
+    jump_speed_(0.0f),
+    rotation_step_(0.0f),
+    run_mul_(0.0f),
+    air_speed_mul_(0.0f),
+    slope_factor_(0.0f),
+    //forward_speed_(0.0f),
+    //strafe_speed_(0.0f),
+    rotation_(0.0f),
+    //jump_speed_(0.0f),
+    air_time_(0.0f),
+    down_vel_(0.0f),
+    momentum_(Urho3D::Vector3::ZERO),
     frame_counter(0)
 {
     SetUpdateEventMask(Urho3D::USE_FIXEDUPDATE);
@@ -68,435 +52,422 @@ void KinematicCharacterCtrl::RegisterObject(Urho3D::Context* context)
 //    URHO3D_ATTRIBUTE("In Air Timer", float, inAirTimer_, 0.0f, AM_DEFAULT);
 }
 
-
+/*
 void KinematicCharacterCtrl::Start()
 {
+    //  Cache engine components, in order to avoid getting them every frame.
     physics_world = node_->GetScene()->GetComponent<Urho3D::PhysicsWorld>();
     animation_ctrl = node_->GetComponent<Urho3D::AnimationController>(true);
     coll_shape = node_->GetComponent<Urho3D::CollisionShape>(true);
 
     camera_node = node_->GetChild("Camera", true);
 
-    // Component has been inserted into its scene node. Subscribe to events now
+    //  Component has been inserted into its scene node. Subscribe to events now
+    //  ...
 }
-
-void KinematicCharacterCtrl::Init(
-        float capsule_height, float capsule_diameter,
-        float spring_height, float spring_diameter,
-        float jump_strength, float gravity)
+*/
+void KinematicCharacterCtrl::Init(float spring_height)
 {
-    capsule_height_ = capsule_height;
-    capsule_diameter_ = capsule_diameter;
     spring_height_ = spring_height;
-    spring_diameter_ = spring_diameter;
-    jump_strength_ = jump_strength;
+
+    //  Cache engine components, in order to avoid getting them every frame.
+    physics_world_ = node_->GetScene()->GetComponent<Urho3D::PhysicsWorld>();
+    animation_ctrl_ = node_->GetComponent<Urho3D::AnimationController>(true);
+    coll_shape_ = node_->GetComponent<Urho3D::CollisionShape>(true);
+
+    camera_node_ = node_->GetChild("Camera", true);
+}
+
+
+void KinematicCharacterCtrl::Init(float forward_speed, float back_speed, float strafe_speed, float rotation_step,
+                                  float jump_speed, float run_mul, float air_speed_mul,
+                                  float gravity, float slope_factor)
+{
+    forward_speed_ = forward_speed;
+    back_speed_ = back_speed;
+    strafe_speed_ = strafe_speed;
+    rotation_step_ = rotation_step;
+    jump_speed_ = jump_speed;
+    run_mul_ = run_mul;
+    air_speed_mul_ = air_speed_mul;
     gravity_ = gravity;
+    slope_factor_ = slope_factor;
 }
 
 
-bool KinematicCharacterCtrl::MoveAndCollide(
+void KinematicCharacterCtrl::Pull(const Urho3D::Vector3& pos, const Urho3D::Vector3& vel, Urho3D::Vector3& vpulled)
+{
+    MoveAndSlide(pos, vel, vpulled, char_state, true);
+}
+
+
+void KinematicCharacterCtrl::MoveAndSlide(
         const Urho3D::Vector3& pos, const Urho3D::Vector3& vel,
-        Urho3D::Vector3& vmoved, Urho3D::Vector3& vremain,
-        CollisionState& cstate)
+        Urho3D::Vector3& vm, CollisionState& cstate,
+        bool stop_on_floor)
 {
-//PrintVector(vel);
-    float vel_length = vel.Length();
+    Urho3D::Vector3 vwanted = vel;
+    Urho3D::Vector3 vmoved;
+    Urho3D::Vector3 vremain;
+    vm = Urho3D::Vector3::ZERO;
 
-    Urho3D::PhysicsRaycastResult raycast_result;
-    physics_world->ConvexCast(
+    bool on_floor = false;
+    bool on_wall = false;
+    bool on_ceiling = false;
+
+    bool move_completed = false;
+    int slide_counter = 0;
+    while (move_completed == false && slide_counter < 3)
+    {
+        float vel_length = vwanted.Length();
+
+        //  If intended movement is too small, we can probably get away without moving at all.
+        if (vel_length < 0.0001f)
+        {
+            move_completed = true;
+            continue;
+        }
+
+        Urho3D::PhysicsRaycastResult raycast_result;
+        physics_world_->ConvexCast(
                 raycast_result,
-                coll_shape,
-                pos, Urho3D::Quaternion::IDENTITY,
-                pos + vel, Urho3D::Quaternion::IDENTITY,
+                coll_shape_,
+                pos + vm, Urho3D::Quaternion::IDENTITY,
+                pos + vm + vwanted, Urho3D::Quaternion::IDENTITY,
                 CL_TERRAIN | CL_STATIC);
 
-    if (raycast_result.body_)  //  shape has collided with another body
-    {
-        float collison_margin = raycast_result.body_->GetNode()->GetComponent<Urho3D::CollisionShape>()->GetMargin();
-        float adjusted_distance = raycast_result.distance_ + collison_margin;
-//printf("%d %f %f\n", frame_counter, raycast_result.distance_, collison_margin);
-        vmoved = (adjusted_distance / vel_length) * vel;
-        vremain = Slide(((vel_length - adjusted_distance) / vel_length) * vel, raycast_result.normal_);
-
-        //  TODO stuff here
-        float xx = raycast_result.normal_.DotProduct(Urho3D::Vector3::UP);
-
-        //  Hit a (near) perpendicular surface. No need to slide. Maybe problematic  ??? i don't know yet
-        if (xx >= 0.95f)
+        //  Shape has collided with another body
+        if (raycast_result.body_)
         {
+            float fvel = raycast_result.normal_.DotProduct(vwanted.Normalized());
+            float fground = raycast_result.normal_.DotProduct(Urho3D::Vector3::UP);
+
+            vmoved = (raycast_result.distance_ / vel_length) * vwanted;
+            vremain = Toybox::Project(((vel_length - raycast_result.distance_) / vel_length) * vwanted, raycast_result.normal_);
+
+            //  Tiny :) hack. We move the character away from the collided body by a small amount.
+            //  Sometimes vremain vector would collide again, in the same spot.
+            //  This way we try to avoid that. If necessary increase amount very slightly.
+            vmoved = vmoved + (raycast_result.normal_ * 0.001f);
+
+
+            //  Touched wall. Slide along movement vector.
+            if (fground >= -0.05f && fground < 0.05f)
+            {
+                on_wall = true;
+            }
+
+            //  Touched high sloped ceiling.
+            else if (fground >= -slope_factor_ && fground < -0.05f)
+            {
+                on_ceiling = true;
+            }
+
+            //  Touched ceiling.
+            else if (fground < -slope_factor_)
+            {
+                on_ceiling = true;
+                //cstate.state_ = KCS_FALLING;
+                //move_completed = true;
+            }
+        }
+
+        //  No collision detected.
+        else
+        {
+            vmoved = vwanted;
             vremain = Urho3D::Vector3::ZERO;
-            SpringCast(pos, vmoved, cstate);
-            return true;
-        }
-        //  Touched floor or low slope. Can walk
-        else if (xx >= slope_factor_)
-        {
-            SpringCast(pos, vmoved, cstate);
-            return false;
+            move_completed = true;
         }
 
-        //  Touched wall or high slope. Can't walk. Maybe slide on wall
-        else if (xx >= 0.0f && xx < slope_factor_)
-        {
-//PrintVector(raycast_result.normal_);
-//printf("3. %f \n", xx);
-            SpringCast(pos, vmoved, cstate);
-        }
+        vm += vmoved;
+//        body_pos += vmoved;
+        vwanted = vremain;
+        slide_counter++;
 
-        //  Touched ceiling. Not yet implemented
-        else if (xx < 0.0f)
+        //  In the end of normal movement stage it was necessary to adjust the character.
+        //  This block tries to pull character up/down.
+        if (stop_on_floor == true)
         {
-//printf("4. %f \n", xx);
-            SpringCast(pos, vmoved, cstate);
-        }
+            CollisionState cs;
+            GroundCheck(pos, vm, cs);
+            if (cs.ground_dist_ >= -0.001f && cs.ground_dist_ <= 0.001f)
+            {
+                move_completed = true;
+            }
 
-        return false;
+            //cstate = cs;
+        }
     }
-    else  //  no hit
+
+    //  Normal movement stage has ended. Check if special care is needed.
+    if (stop_on_floor == false)
     {
-        vmoved = vel;
-        vremain = Urho3D::Vector3::ZERO;
+        CollisionState cs;
+        GroundCheck(pos, vm, cs);
 
-        if (char_state.OnGround())
+        //  Started climbing a high slope. Push character down.
+        if (cs.ground_level_ >= 0.05f && cs.ground_level_ < slope_factor_)
         {
-            //  Add pull down force
-            //vmoved = vmoved + Urho3D::Vector3(0.0f, -1.0f, 0.0f);
+            Urho3D::Vector3 vpulled;
+            Pull(pos + vm, Urho3D::Vector3(0.0f, -0.4f, 0.0f), vpulled);
+            vm += vpulled;
         }
 
-        SpringCast(pos, vmoved, cstate);
-		if (cstate.state_ == KCS_STANDING)
-		{
-//printf("%d - VOU TOCAR - ", frame_counter);
-//cstate.Print();
-		}
+        //  Collided with high sloped ceiling.
+        //  If this happens while going up a slope, the character could bury it's feet, or start traversing wall.
+        //  Try to pull character up, along the wall/ceiling, to stay above ground.
+        else if (on_ceiling)
+        {
+            Urho3D::Vector3 vpulled;
+            Pull(pos + vm, Urho3D::Vector3(0.0f, Urho3D::Abs(cs.ground_dist_), 0.0f) , vpulled);
+            vm += vpulled;
+        }
 
-        return true;
+        //cstate = cs;
     }
+
+    GroundCheck(pos, vm, cstate);
 }
 
 
-void KinematicCharacterCtrl::SpringCast(const Urho3D::Vector3& pos, CollisionState& state, const Urho3D::Vector3& floor_normal)
+void KinematicCharacterCtrl::GroundCheck(const Urho3D::Vector3& pos, const Urho3D::Vector3& velocity, CollisionState& state, const Urho3D::Vector3& floor_normal)
 {
-    SpringCast(pos, Urho3D::Vector3::ZERO, state, floor_normal);
-}
-
-/// need to recheck last statements
-void KinematicCharacterCtrl::SpringCast(const Urho3D::Vector3& pos, const Urho3D::Vector3& velocity, CollisionState& state, const Urho3D::Vector3& floor_normal)
-{
-    float ground_dist;
+    //  Raycasts down, with the collision capsule
     Urho3D::PhysicsRaycastResult raycast_result;
+    physics_world_->ConvexCast(
+            raycast_result,
+            coll_shape_,
+            pos + velocity, Urho3D::Quaternion::IDENTITY,
+            pos + velocity + Urho3D::Vector3(0.0f, -spring_cast_length_, 0.0f), Urho3D::Quaternion::IDENTITY,
+            CL_TERRAIN | CL_STATIC);
 
-    int tipo = 1;
-    if (tipo == 1)
-    {
-        //  Raycasts down, with a single ray, from the base of the capsule
-        physics_world->RaycastSingle(
-                raycast_result,
-                Urho3D::Ray(pos + velocity + Urho3D::Vector3(0.0f, spring_height_ , 0.0f), -floor_normal),
-                spring_cast_length,
-                CL_TERRAIN | CL_STATIC);
-
-        if (raycast_result.body_)
-        {
-            ground_dist = raycast_result.distance_ - spring_height_;
-        }
-        else
-        {
-            ground_dist = Urho3D::M_INFINITY;
-        }
-    }
-    else if (tipo == 2)
-    {
-        //  Raycasts down, with a sphere, from the base of the capsule minus the sphere radius
-        physics_world->SphereCast(
-                raycast_result,
-                Urho3D::Ray(pos + velocity + Urho3D::Vector3(0.0f, spring_height_ - (spring_diameter_ * 0.5f), 0.0f), -floor_normal),
-                spring_diameter_ * 0.5f,
-                spring_cast_length,
-                CL_TERRAIN | CL_STATIC);
-
-        if (raycast_result.body_)
-        {
-            float collison_margin = raycast_result.body_->GetNode()->GetComponent<Urho3D::CollisionShape>()->GetMargin();
-            ground_dist = raycast_result.distance_ - spring_height_ + spring_diameter_ + collison_margin;
-        }
-        else
-        {
-            ground_dist = Urho3D::M_INFINITY;
-        }
-    }
-    else if (tipo == 3)
-    {
-        //  Raycasts down, with the collision capsule
-        physics_world->ConvexCast(
-                raycast_result,
-                coll_shape,
-                pos + velocity, Urho3D::Quaternion::IDENTITY,
-                pos + velocity + Urho3D::Vector3(0.0f, -spring_cast_length, 0.0f), Urho3D::Quaternion::IDENTITY,
-                CL_TERRAIN | CL_STATIC);
-
-        if (raycast_result.body_)
-        {
-            float collison_margin = raycast_result.body_->GetNode()->GetComponent<Urho3D::CollisionShape>()->GetMargin();
-            ground_dist = raycast_result.distance_ - spring_height_ + collison_margin;
-        }
-        else
-        {
-            ground_dist = Urho3D::M_INFINITY;
-        }
-    }
-
-    state.Update(raycast_result, velocity, ground_dist, spring_height_, spring_diameter_ * 0.5f, slope_factor_);
-
-//    if (char_state.state_ == KCS_JUMPING && state.state_ == KCS_FALLING)
-//        state.state_ = KCS_JUMPING;
-
-//    if ((char_state.state_ == KCS_JUMPING || char_state.state_ == KCS_FALLING || char_state.state_ == KCS_SLIDING) && state.state_ == KCS_STANDING)
-//        state.state_ = KCS_LANDING;
+    state.Update(raycast_result, velocity, spring_height_, slope_factor_);
 }
 
 
-Urho3D::Vector3 KinematicCharacterCtrl::CalcVelocity(const Urho3D::Quaternion& rotation, float time_step)
+void KinematicCharacterCtrl::ProcessInput(float time_step)
 {
-//PrintMessage(frame_counter, "CalcVelocity");
-    Urho3D::Vector3 forward_dir = (rotation * Urho3D::Vector3::FORWARD).Normalized();
-    Urho3D::Vector3 right_dir = (rotation * Urho3D::Vector3::RIGHT).Normalized();
-    Urho3D::Vector3 upward_dir = (rotation * Urho3D::Vector3::UP).Normalized();
-    //Urho3D::Vector3 pull_force = Urho3D::Vector3(0.0f, -1.0f, 0.0f);
+    //  1st stage - calculate movement direction from inputs only.
+    //  In this stage, velocity vector is treated as a direction only (it will be normalized in the end).
+    //  Forward / backward.
+    if (input.IsKeyDown(KM_CHARACTER_FORWARD))
+    {
+        velocity_.z_ = 1.0f;
+    }
+    else if (input.IsKeyDown(KM_CHARACTER_BACKWARD))
+    {
+        velocity_.z_ = -1.0f;
+    }
+    else
+    {
+        velocity_.z_ = 0.0f;
+    }
 
-    Urho3D::Vector3 velocity = Urho3D::Vector3::ZERO;
+    //  Strafe.
+    if (input.IsKeyDown(KM_CHARACTER_STRAFE_LEFT))
+    {
+        velocity_.x_ = -1.0f;
+    }
+    else if (input.IsKeyDown(KM_CHARACTER_STRAFE_RIGHT))
+    {
+        velocity_.x_ = 1.0f;
+    }
+    else
+    {
+        velocity_.x_ = 0.0f;
+    }
 
-    //  ground contact
+    //  2nd stage. Determine angle of direction vector.
+    float angle = velocity_.Normalized().Angle(Urho3D::Vector3::RIGHT);
+    if (velocity_.z_ < 0.0f)
+    {
+        angle *= -1;
+    }
+
+    //  3rd stage. Determine the velocity vector, still only based on the inputs.
+    //  We used the angle obtained in stage 2, and the speeds the character can move on
+    //  the different axis.
+    //  If the character moved at the same speed in all axis, this would not be necessary.
+    //  Forward / backward.
+    if (input.IsKeyDown(KM_CHARACTER_FORWARD))
+    {
+        velocity_.z_ = Urho3D::Sin(angle) * forward_speed_;
+    }
+    else if (input.IsKeyDown(KM_CHARACTER_BACKWARD))
+    {
+        velocity_.z_ = Urho3D::Sin(angle) * back_speed_;
+    }
+    else
+    {
+        velocity_.z_ = 0.0f;
+    }
+
+    //  Strafe.
+    if (input.IsKeyDown(KM_CHARACTER_STRAFE_LEFT) || input.IsKeyDown(KM_CHARACTER_STRAFE_RIGHT))
+    {
+        velocity_.x_ = Urho3D::Cos(angle) * strafe_speed_;
+    }
+    else
+    {
+        velocity_.x_ = 0.0f;
+    }
+
+    //  Jump.
+    if (input.IsKeyDown(KM_CHARACTER_JUMP))
+    {
+        if (char_state.OnGround() || air_time_ < 0.2f)
+        {
+            velocity_.y_ = jump_speed_;
+            char_state.state_ = KCS_JUMPING;
+        }
+    }
+    else
+    {
+        velocity_.y_ = 0.0f;
+    }
+
+    //  Walk/run modifier.
+    if (input.IsKeyDown(KM_CHARACTER_WALK))
+    {
+        velocity_.z_ *= run_mul_;
+        velocity_.x_ *= run_mul_;
+    }
+
+    //  Rotation.
+    if (input.IsKeyDown(KM_CHARACTER_TURN_LEFT))
+    {
+        rotation_ -= rotation_step_;
+        if (rotation_ < -180)
+            rotation_ = 360.0f + rotation_;
+    }
+    else if (input.IsKeyDown(KM_CHARACTER_TURN_RIGHT))
+    {
+        rotation_ += rotation_step_;
+        if (rotation_ > 180)
+            rotation_ = -360.0f + rotation_;
+    }
+
+    //  4th stage. Determines final velocity vector, based on character state.
+    //  In this stage, if character is jumping, forward and strafe movement is not used.
+    //  If it's walking, gravity is not applied. And so on...
+    //  Ground contact.
     if (char_state.OnGround())
     {
-//char_state.Print();
-//printf("%d - CalcVelocity - OnGrounf\n", frame_counter);
-        air_time = 0.0f;
-        down_vel = 0.0f;
-        ground_velocity  = (forward_dir * char_control.forward_vel_) + (right_dir * char_control.strafe_vel_);
-        //ground_velocity = ground_velocity + pull_force;
-        air_velocity = ground_velocity;
-        velocity = ground_velocity * time_step;
+        Urho3D::Quaternion rot = Urho3D::Quaternion(0.0f, rotation_, 0.0f);
+        Urho3D::Vector3 forward_dir = (rot * Urho3D::Vector3::FORWARD).Normalized();
+        Urho3D::Vector3 right_dir = (rot * Urho3D::Vector3::RIGHT).Normalized();
+
+        momentum_ = (forward_dir * velocity_.z_) + (right_dir * velocity_.x_);
+        velocity_ = momentum_ * time_step;
     }
 
-    //  landing
-    //  dont' expect to ever occur
-    //  expect to usually happen in the middle of frame
-//    else if (char_state.state_ == KCS_LANDING)
-//    {
-//        PrintMessage(frame_counter, "LANDIND - SHOULD NOT HAVE HAPPENED HERE !!!");
-//        air_time = 0.0f;
-//        down_vel = 0.0f;
-//        velocity = Urho3D::Vector3::ZERO;
-//    }
-
-    //  jumping - should also be used to push the body (explosions, etc)
+    //  Jumping - also used to push the body (explosions, etc).
     else if (char_state.state_ == KCS_JUMPING)
     {
-        air_time += time_step;
-        down_vel += (gravity_ * time_step);
-        velocity = (air_velocity * 1.0f * time_step) + (Urho3D::Vector3::UP * ((jump_strength_ * time_step) + (down_vel * 1.0f)));
+        velocity_ = (momentum_ * air_speed_mul_ * time_step) + (Urho3D::Vector3::UP * ((jump_speed_ * time_step) + down_vel_));
+        //velocity_ = (momentum_ * air_speed_mul_ * time_step) + (Urho3D::Vector3::UP * ((velocity_.y_ * time_step) + down_vel));
     }
 
-    //  falling
+    //  Falling.
     else if (char_state.state_ == KCS_FALLING)
     {
-        air_time += time_step;
-        down_vel += (gravity_ * time_step);
-        velocity = (air_velocity * 0.15f * time_step) + (Urho3D::Vector3::UP * down_vel);
+        velocity_ = (momentum_ * air_speed_mul_ * time_step) + (Urho3D::Vector3::UP * down_vel_);
     }
 
-    //  sliding on a surface
+    //  Sliding down on a surface.
     else if (char_state.state_ == KCS_SLIDING)
     {
-        air_time += time_step;
-        down_vel += (gravity_ * time_step);
-        velocity = Slide(Urho3D::Vector3::UP * down_vel, char_state.ground_normal_);
+        velocity_ = Toybox::Slide(Urho3D::Vector3::UP * down_vel_, char_state.ground_normal_);
     }
 
-    //  should never happen
+    //  Error - Should never happen.
     else
     {
-        PrintMessage(frame_counter, "VELOCITY - SHOULD NOT HAVE HAPPENED !!!");
-        velocity = Urho3D::Vector3::ZERO;
+        velocity_ = Urho3D::Vector3::ZERO;
     }
-
-    return velocity;
 }
 
 
-void KinematicCharacterCtrl::Move(Urho3D::Vector3& body_pos, Urho3D::Vector3& velocity)
+void KinematicCharacterCtrl::Move(Urho3D::Vector3& body_pos, float time_step)
 {
-//PrintMessage(frame_counter, "Move");
+    Urho3D::Vector3 vmoved;
+    MoveAndSlide(body_pos, velocity_, vmoved, char_state);
+    body_pos = body_pos + vmoved;
 
-    Urho3D::Vector3 vmoved, vremain;
-
-/*
-    int i=0;
-    while (MoveAndCollide(body_pos, velocity, vmoved, vremain, char_state) == false || i < 3)
-    {
-        i++;
-    }
-*/
-//PrintVector(velocity);
-    MoveAndCollide(body_pos, velocity, vmoved, vremain, char_state);
-char_state.Print();
     if (char_state.OnGround())
     {
-printf("%d - ", frame_counter);
-char_state.Print();
-//PrintVector(body_pos);
-//PrintVector(vmoved);
-        node_->SetPosition(body_pos + vmoved - Urho3D::Vector3(0.0f, char_state.ground_dist_, 0.0f));
+        node_->SetPosition(body_pos - Urho3D::Vector3(0.0f, char_state.ground_dist_, 0.0f));
+        node_->SetRotation(Urho3D::Quaternion(0.0f, rotation_, 0.0f));
+        air_time_ = 0.0f;
+        down_vel_ = 0.0f;
     }
-
-    if (char_state.OnAir())
+    else if (char_state.OnAir())
     {
-//printf("2\n");
-        node_->SetPosition(body_pos + vmoved);
-
-    }
-
-
-    return;
-    CollisionState new_state;
-    //  ground -> ground
-    if (char_state.OnGround() &&  new_state.OnGround())
-    {
-//PrintMessage(frame_counter, "move - on_ground");
-        velocity.y_ = velocity.y_ + new_state.ground_dist_;
-
-        body_pos = body_pos + velocity;
         node_->SetPosition(body_pos);
-
-        char_state = new_state;
-        velocity = Urho3D::Vector3::ZERO;
-
-        //animation_ctrl->PlayExclusive("Models/Characters/Julia/Walk.ani", 0, true, 0.2f);
-    }
-
-    else if (new_state.state_ == KCS_LANDING)  //  stops for the rest of the frame duration
-    {
-//PrintMessage(frame_counter, "TODO - move - landing");
-        Urho3D::Vector3 vmoved;
-        Urho3D::Vector3 vremain;
-        CollisionState cstate;
-        MoveAndCollide(body_pos, velocity, vmoved, vremain, cstate);
-//PrintVector(velocity);
-//PrintVector(vmoved);
-//PrintVector(vremain);
-        //vmoved += Urho3D::Vector3(0.0f, spring_radius, 0.0f);
-
-        body_pos = body_pos + vmoved;
-        node_->SetPosition(body_pos);
-
-        char_state = new_state;
-        char_state.state_ = KCS_STANDING;
-        velocity = Urho3D::Vector3::ZERO;
-    }
-
-    //  ground -> too much ground slope
-    else if ((char_state.state_ == KCS_STANDING || char_state.state_ == KCS_WALKING || char_state.state_ == KCS_RUNNING) &&
-             new_state.state_ == KCS_SLIDING &&
-             new_state.move_pitch_ < 0.0f)  //  wall hug missing
-    {
-//PrintMessage(frame_counter, "Too steep - angle");
-        velocity = Urho3D::Vector3::ZERO;
-    }
-
-    //  ground -> too much high move height
-    else if ((char_state.state_ == KCS_STANDING || char_state.state_ == KCS_WALKING || char_state.state_ == KCS_RUNNING) &&
-             new_state.ground_dist_ < Urho3D::M_INFINITY &&
-             new_state.ground_dist_ > spring_height_)
-    {
-//PrintMessage(frame_counter, "Too steep - height");
-        velocity = Urho3D::Vector3::ZERO;
-    }
-/*
-    else if (char_state.OnAir() && new_state.state == KCS_SLIDING)  //  sliding (after a jump or fall)
-    {
-PrintMessage(frame_counter, "TODO - move - sliding after fall");
-    }
-*/
-    else if (new_state.state_ == KCS_JUMPING || new_state.state_ == KCS_FALLING || new_state.state_ == KCS_SLIDING)
-    {
-//PrintMessage(frame_counter, "move - flying");
-//velocity = Urho3D::Vector3(0.0f, -10.0f, 0.0f);
-//velocity = Urho3D::Vector3(10.0f, 0.0f, 0.0f);
-        Urho3D::Vector3 vmoved;
-        Urho3D::Vector3 vremain;
-        CollisionState cstate;
-        MoveAndCollide(body_pos, velocity, vmoved, vremain, cstate);
-//PrintVector(velocity);
-//PrintVector(vmoved);
-//PrintVector(vremain);
-/*
-        if (new_state.state == KCS_LANDING)
-        {
-
-        }
-        else */if (vremain.LengthSquared() > 0.0f)
-        {
-//PrintMessage(frame_counter, "on air (hit)");
-            //vmoved += Urho3D::Vector3(0.0f, spring_radius, 0.0f);
-            //vremain += Urho3D::Vector3(0.0f, spring_radius, 0.0f);
-//printf("%f %f %f\n", velocity.Length(), vmoved.Length(), vremain.Length());
-
-            body_pos = body_pos + vmoved;
-            node_->SetPosition(body_pos);
-
-            char_state = new_state;
-            velocity = vremain;
-
-            Move(body_pos, velocity);
-
-            velocity = Urho3D::Vector3::ZERO;
-        }
-        else
-        {
-//PrintMessage(frame_counter, "on air (full move)");
-            //vmoved += Urho3D::Vector3(0.0f, spring_radius, 0.0f);
-
-            body_pos = body_pos + vmoved;
-            //body->SetPosition(body_pos);
-            node_->SetPosition(body_pos);
-
-            char_state = new_state;
-            velocity = Urho3D::Vector3::ZERO;
-        }
-    }
-
-    else
-    {
-        PrintMessage(frame_counter, "move - UNDEFINED");
-        velocity = Urho3D::Vector3::ZERO;
+        node_->SetRotation(Urho3D::Quaternion(0.0f, rotation_, 0.0f));
+        air_time_ += time_step;
+        down_vel_ += (gravity_ * time_step);
     }
 }
 
 
 void KinematicCharacterCtrl::FixedUpdate(float time_step)
 {
-//PrintMessage(frame_counter, "FixedUpdate");
     Urho3D::Vector3 pos = node_->GetPosition();
     //const char* WALK_ANI = "Models/Characters/Julia/Walk.ani";
 
-    char_control.Update(&input);
+    ProcessInput(time_step);
+    Move(pos, time_step);
 
-    node_->SetRotation(Urho3D::Quaternion(0.0f, char_control.rotation_, 0.0f));
-/*
-    if (input.IsKeyDown(KM_CHARACTER_JUMP))
-    {
-        if ((char_state.state_ == KCS_STANDING || char_state.state_ == KCS_WALKING || char_state.state_ == KCS_RUNNING ) && air_time < 0.2f)
-        {
-            char_state.state_ = KCS_JUMPING;
-        }
-    }
-*/
-    Urho3D::Vector3 velocity = CalcVelocity(node_->GetRotation(), time_step);
-//PrintVector(velocity);
-    Move(pos, velocity);
-
+    PrintState();
+    prev_char_state = char_state;
     ++frame_counter;
+}
+
+
+void KinematicCharacterCtrl::PrintState()
+{
+    if (char_state.state_ != prev_char_state.state_)
+    {
+        printf("%d - State changed to ", frame_counter);
+        switch (char_state.state_)
+        {
+            case KCS_STANDING :
+                printf("KCS_STANDING | ");
+                break;
+            case KCS_WALKING :
+                printf("KCS_WALKING | ");
+                break;
+            case KCS_RUNNING :
+                printf("KCS_RUNNING |");
+                break;
+            case KCS_JUMPING :
+                printf("KCS_JUMPING | ");
+                break;
+            case KCS_FALLING :
+                printf("KCS_FALLING | ");
+                break;
+            case KCS_SLIDING :
+                printf("KCS_SLIDING | ");
+                break;
+            case KCS_LANDING :
+                printf("KCS_LANDING | ");
+                break;
+            case KCS_SWIMMING :
+                printf("KCS_SWIMMING | ");
+                break;
+            case KCS_DIVING :
+                printf("KCS_DIVING | ");
+                break;
+            default:
+                printf("UNKNOWN | ");
+                break;
+        }
+        printf("%.6f ", air_time_);
+        printf("\n");
+    }
+
 }
 
 }

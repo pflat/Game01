@@ -22,15 +22,15 @@ THIRD_PARTY_GUARDS_END
 namespace Toybox
 {
 
-class WheeledVehicleCtrl : public Urho3D::LogicComponent
+class CarCtrl : public Urho3D::LogicComponent
 {
 
-    URHO3D_OBJECT(WheeledVehicleCtrl, LogicComponent);
+    URHO3D_OBJECT(CarCtrl, LogicComponent);
 
 public:
 
     public:
-    WheeledVehicleCtrl(Urho3D::Context* context);
+    CarCtrl(Urho3D::Context* context);
 
     static void RegisterObject(Urho3D::Context* context);
 

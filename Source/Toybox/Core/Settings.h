@@ -52,7 +52,6 @@ enum MouseMap
 
 enum CameraCtrlType
 {
-	//    CAMERA_MODE_FREE = 1,
 	CAMERA_TYPE_VEHICLE = 2,
 	CAMERA_TYPE_CHARACTER = 3
 };
@@ -89,9 +88,6 @@ enum CollisionLayers
     CL_STATIC = 1 << 2,
     CL_NOCOLLISION = 1 << 3
 };
-
-
-//  Settings - DEBUG -
 
 
 }

@@ -54,8 +54,8 @@ Scene* LoadScene(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Resour
     //  Set ambiente music
     if (xml_elem.HasChild("music"))
     {
-        Urho3D::Sound* music = cache->GetResource<Urho3D::Sound>(xml_elem.GetChild("music").GetAttribute("name"));
-        sector->SetAmbientMusic(music);
+//        Urho3D::Sound* music = cache->GetResource<Urho3D::Sound>(xml_elem.GetChild("music").GetAttribute("name"));
+//        sector->SetAmbientMusic(music);
     }
 
     //  Set lighting setings (zone ambient light and fog)
@@ -131,9 +131,9 @@ SpaceshipCtrl* LoadSpaceship(const Urho3D::String file, Urho3D::Scene* scene, Ur
     if (xml_elem.HasChild("thrust"))
     {
         ship->thrust.Set(xml_elem.GetChild("thrust").GetFloat("step"),
-                        xml_elem.GetChild("thrust").GetFloat("min"),
-                        xml_elem.GetChild("thrust").GetFloat("max"),
-                        xml_elem.GetChild("thrust").GetFloat("damp"));
+                         xml_elem.GetChild("thrust").GetFloat("min"),
+                         xml_elem.GetChild("thrust").GetFloat("max"),
+                         xml_elem.GetChild("thrust").GetFloat("damp"));
     }
     if (xml_elem.HasChild("pitch"))
     {
@@ -145,16 +145,16 @@ SpaceshipCtrl* LoadSpaceship(const Urho3D::String file, Urho3D::Scene* scene, Ur
     if (xml_elem.HasChild("yaw"))
     {
         ship->yaw.Set(xml_elem.GetChild("yaw").GetFloat("step"),
-                        xml_elem.GetChild("yaw").GetFloat("min"),
-                        xml_elem.GetChild("yaw").GetFloat("max"),
-                        xml_elem.GetChild("yaw").GetFloat("damp"));
+                      xml_elem.GetChild("yaw").GetFloat("min"),
+                      xml_elem.GetChild("yaw").GetFloat("max"),
+                      xml_elem.GetChild("yaw").GetFloat("damp"));
     }
     if (xml_elem.HasChild("roll"))
     {
         ship->roll.Set(xml_elem.GetChild("roll").GetFloat("step"),
-                        xml_elem.GetChild("roll").GetFloat("min"),
-                        xml_elem.GetChild("roll").GetFloat("max"),
-                        xml_elem.GetChild("roll").GetFloat("damp"));
+                       xml_elem.GetChild("roll").GetFloat("min"),
+                       xml_elem.GetChild("roll").GetFloat("max"),
+                       xml_elem.GetChild("roll").GetFloat("damp"));
     }
 
     for (Urho3D::XMLElement child_elem = xml_elem.GetChild("node"); child_elem; child_elem = child_elem.GetNext("node"))
@@ -266,9 +266,8 @@ KinematicCharacterCtrl* LoadKinematicCharacter(const Urho3D::String file, Urho3D
     float capsule_height = 1.63f;
     float capsule_diameter = 0.4f;
     float spring_height = 0.2f;
-    float spring_diameter = 0.05f;
-    float jump_strength = 15.0f;
-    float gravity = -0.620f;
+    float gravity = -9.81f * 0.1f;
+    float jump_strength = -gravity * 30.0f;
 
     Urho3D::CollisionShape* shape1 = node->CreateComponent<Urho3D::CollisionShape>();
     shape1->SetCapsule(capsule_diameter, capsule_height - spring_height, Urho3D::Vector3(0.0f, (capsule_height + spring_height) / 2.0f, 0.0f));
@@ -280,7 +279,8 @@ KinematicCharacterCtrl* LoadKinematicCharacter(const Urho3D::String file, Urho3D
     //body->SetCollisionEventMode(Urho3D::COLLISION_ALWAYS);
 
 	KinematicCharacterCtrl* kc = node->CreateComponent<KinematicCharacterCtrl>();
-    kc->Init(capsule_height, capsule_diameter, spring_height, spring_diameter, jump_strength, gravity);
+    kc->Init(spring_height);
+    kc->Init(10.0f, 5.0f, 7.0f, 5.0f, jump_strength, 0.25f, 1.0f, gravity, Urho3D::Cos(45.0f));
     return kc;
 }
 

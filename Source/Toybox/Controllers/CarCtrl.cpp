@@ -1,4 +1,4 @@
-#include "../Controllers/WheeledVehicleCtrl.h"
+#include "../Controllers/CarCtrl.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 //#include <Urho3D/IO/MemoryBuffer.h>
@@ -21,16 +21,16 @@ THIRD_PARTY_GUARDS_END
 namespace Toybox
 {
 
-WheeledVehicleCtrl::WheeledVehicleCtrl(Urho3D::Context* context) :
+CarCtrl::CarCtrl(Urho3D::Context* context) :
     Urho3D::LogicComponent(context)
 {
     SetUpdateEventMask(Urho3D::USE_FIXEDUPDATE);
 }
 
 
-void WheeledVehicleCtrl::RegisterObject(Urho3D::Context* context)
+void CarCtrl::RegisterObject(Urho3D::Context* context)
 {
-    context->RegisterFactory<WheeledVehicleCtrl>();
+    context->RegisterFactory<CarCtrl>();
 
     // These macros register the class attributes to the Context for automatic load / save handling.
     // We specify the Default attribute mode which means it will be used both for saving into file, and network replication
@@ -42,13 +42,13 @@ void WheeledVehicleCtrl::RegisterObject(Urho3D::Context* context)
 }
 
 
-void WheeledVehicleCtrl::Start()
+void CarCtrl::Start()
 {
     // Component has been inserted into its scene node. Subscribe to events now
 }
 
 
-void WheeledVehicleCtrl::FixedUpdate(float time_step)
+void CarCtrl::FixedUpdate(float time_step)
 {
 
 }

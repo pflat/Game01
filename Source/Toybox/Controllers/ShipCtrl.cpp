@@ -1,5 +1,6 @@
-#include "../Controllers/SpaceshipCtrl.h"
-#include "../Core/Settings.h"
+#include "../Controllers/ShipCtrl.h"
+#include "../Core/ToyboxDefs.h"
+#include "../Core/Debug.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 //#include <Urho3D/Physics/RigidBody.h>
@@ -16,7 +17,7 @@ THIRD_PARTY_GUARDS_END
 namespace Toybox
 {
 
-SpaceshipCtrl::SpaceshipCtrl(Urho3D::Context* context) :
+ShipCtrl::ShipCtrl(Urho3D::Context* context) :
     Urho3D::LogicComponent(context),
     last_thrust_factor(0),
     last_pos(0,0,0),
@@ -26,9 +27,9 @@ SpaceshipCtrl::SpaceshipCtrl(Urho3D::Context* context) :
 }
 
 
-void SpaceshipCtrl::RegisterObject(Urho3D::Context* context)
+void ShipCtrl::RegisterObject(Urho3D::Context* context)
 {
-    context->RegisterFactory<SpaceshipCtrl>();
+    context->RegisterFactory<ShipCtrl>();
 
     // These macros register the class attributes to the Context for automatic load / save handling.
     // We specify the Default attribute mode which means it will be used both for saving into file, and network replication
@@ -40,7 +41,7 @@ void SpaceshipCtrl::RegisterObject(Urho3D::Context* context)
 }
 
 
-void SpaceshipCtrl::Start()
+void ShipCtrl::Start()
 {
     // Component has been inserted into its scene node. Subscribe to events now
     //SubscribeToEvent(GetNode(), E_NODECOLLISION, URHO3D_HANDLER(Character, HandleNodeCollision));
@@ -53,97 +54,145 @@ void SpaceshipCtrl::Start()
 }
 
 
-void SpaceshipCtrl::FixedUpdate(float time_step)
+void ShipCtrl::FixedUpdate(float time_step)
 {
     bool key_ctrl = input.keyboard_qualifiers && Urho3D::QUAL_CTRL;
-    //  Speed control
-    if (input.IsKeyDown(KM_VEHICLE_SPEED_MAX) && !key_ctrl)
+
+    //  Thrust in local X axis.
+    if (thrust_x_.Enabled())
     {
-        //thrust.target_ = thrust.max_;
-        thrust.SetMax();
-    }
-    else if (input.IsKeyDown(KM_VEHICLE_SPEED_STOP) && !key_ctrl)
-    {
-        //thrust.target_ = 0;
-        thrust.Stop();
-    }
-    else if (input.IsKeyDown(KM_VEHICLE_SPEED_INC) && !key_ctrl)
-    {
-        //thrust.target_ += thrust.step_;
-        thrust.Increase();
-    }
-    else if (input.IsKeyDown(KM_VEHICLE_SPEED_DEC) && !key_ctrl)
-    {
-        //thrust.target_ -= thrust.step_;
-        thrust.Decrease();
+        if (input.IsKeyDown(KM_VEHICLE_THRUST_X_MAX) && !key_ctrl)
+        {
+            thrust_x_.SetMax();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_X_STOP) && !key_ctrl)
+        {
+            thrust_x_.Stop();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_X_INC) && !key_ctrl)
+        {
+            thrust_x_.Increase();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_X_DEC) && !key_ctrl)
+        {
+            thrust_x_.Decrease();
+        }
+        thrust_x_.Update();
     }
 
-    //  Pitch control
-    if (input.IsKeyDown(KM_VEHICLE_PITCH_UP) && !key_ctrl)
+    //  Thrust in local Y axis.
+    if (thrust_y_.Enabled())
     {
-        //pitch.target_ = pitch.min_;
-        pitch.SetMin();
-    }
-    else if (input.IsKeyDown(KM_VEHICLE_PITCH_DOWN) && !key_ctrl)
-    {
-        //pitch.target_ = pitch.max_;
-        pitch.SetMax();
-    }
-    else
-    {
-        //pitch.target_ = 0;
-        pitch.Stop();
-    }
-
-    //  Yaw control
-    if (input.IsKeyDown(KM_VEHICLE_YAW_LEFT) && !key_ctrl)
-    {
-        //yaw.target_ = yaw.min_;
-        yaw.SetMin();
-    }
-    else if (input.IsKeyDown(KM_VEHICLE_YAW_RIGHT) && !key_ctrl)
-    {
-        //yaw.target_ = yaw.max_;
-        yaw.SetMax();
-    }
-    else
-    {
-        //yaw.target_ = 0;
-        yaw.Stop();
+        if (input.IsKeyDown(KM_VEHICLE_THRUST_Y_MAX) && !key_ctrl)
+        {
+            thrust_y_.SetMax();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_Y_STOP) && !key_ctrl)
+        {
+            thrust_y_.Stop();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_Y_INC) && !key_ctrl)
+        {
+            thrust_y_.Increase();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_Y_DEC) && !key_ctrl)
+        {
+            thrust_y_.Decrease();
+        }
+        thrust_y_.Update();
     }
 
-    //  Roll control
-    if (input.IsKeyDown(KM_VEHICLE_ROLL_LEFT) && !key_ctrl)
+    //  Thrust in local Z axis.
+    if (thrust_z_.Enabled())
     {
-        //roll.target_ = roll.max_;
-        roll.SetMax();
-    }
-    else if (input.IsKeyDown(KM_VEHICLE_ROLL_RIGHT) && !key_ctrl)
-    {
-        //roll.target_ = roll.min_;
-        roll.SetMin();
-    }
-    else
-    {
-        //roll.target_ = 0;
-        roll.Stop();
+        if (input.IsKeyDown(KM_VEHICLE_THRUST_Z_MAX) && !key_ctrl)
+        {
+            thrust_z_.SetMax();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_Z_STOP) && !key_ctrl)
+        {
+            thrust_z_.Stop();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_Z_INC) && !key_ctrl)
+        {
+            thrust_z_.Increase();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_THRUST_Z_DEC) && !key_ctrl)
+        {
+            thrust_z_.Decrease();
+        }
+        thrust_z_.Update();
     }
 
-    thrust.Update();
-    pitch.Update();
-    yaw.Update();
-    roll.Update();
+    //  Rotate in local X axis - pitch.
+    if (rotate_x_.Enabled())
+    {
+        if (input.IsKeyDown(KM_VEHICLE_ROT_X_DEC) && !key_ctrl)
+        {
+            rotate_x_.SetMin();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_ROT_X_INC) && !key_ctrl)
+        {
+            rotate_x_.SetMax();
+        }
+        else
+        {
+            rotate_x_.Stop();
+        }
+        rotate_x_.Update();
+    }
+
+    //  Rotate in local Y axis - yaw.
+    if (rotate_y_.Enabled())
+    {
+        if (input.IsKeyDown(KM_VEHICLE_ROT_Y_DEC) && !key_ctrl)
+        {
+            rotate_y_.SetMin();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_ROT_Y_INC) && !key_ctrl)
+        {
+            rotate_y_.SetMax();
+        }
+        else
+        {
+            rotate_y_.Stop();
+        }
+        rotate_y_.Update();
+    }
+
+    //  Rotate in local Z axis - roll.
+    if (rotate_z_.Enabled())
+    {
+        if (input.IsKeyDown(KM_VEHICLE_ROT_Z_DEC) && !key_ctrl)
+        {
+            rotate_z_.SetMax();
+        }
+        else if (input.IsKeyDown(KM_VEHICLE_ROT_Z_INC) && !key_ctrl)
+        {
+            rotate_z_.SetMin();
+        }
+        else
+        {
+            rotate_z_.Stop();
+        }
+        rotate_z_.Update();
+    }
 /*
     Urho3D::Vector3 forward_dir = (body->GetRotation() * Urho3D::Vector3::FORWARD).Normalized();
     Urho3D::Vector3 ship_rot(pitch.current, yaw.current, roll.current);
     body->ApplyForce(forward_dir * thrust.current * time_step);
     body->ApplyTorque(body->GetRotation() * ship_rot * time_step);
 */
-    Urho3D::Vector3 forward_dir = (body->GetRotation() * Urho3D::Vector3::FORWARD).Normalized();
-    //Urho3D::Quaternion ship_rot(pitch.current_, yaw.current_, roll.current_);
-    Urho3D::Quaternion ship_rot(pitch.Value(), yaw.Value(), roll.Value());
-    body->SetLinearVelocity(forward_dir * thrust.Value() * time_step);
-    body->SetRotation(body->GetRotation() * ship_rot * time_step);
+    Urho3D::Quaternion ship_rot = body->GetRotation();
+    ship_rot = ship_rot * Urho3D::Quaternion(rotate_x_.Value(), rotate_y_.Value(), rotate_z_.Value());
+
+    Urho3D::Vector3 local_x = (ship_rot * Urho3D::Vector3::RIGHT).Normalized();
+    Urho3D::Vector3 local_y = (ship_rot * Urho3D::Vector3::UP).Normalized();
+    Urho3D::Vector3 local_z = (ship_rot * Urho3D::Vector3::FORWARD).Normalized();
+
+
+    body->SetRotation(ship_rot * time_step);
+    body->SetLinearVelocity(((local_x * thrust_x_.Value()) + (local_y * thrust_y_.Value()) + (local_z * thrust_z_.Value())) * time_step);
 
     //printf("%s\n", node_->GetName().CString());
     //if (node_->GetName() == "Buzzard")
@@ -153,7 +202,7 @@ void SpaceshipCtrl::FixedUpdate(float time_step)
     last_pos = body->GetPosition();
 
     //  Change color of engine emissive faces
-    float thrust_factor = thrust.Factor();
+    float thrust_factor = thrust_z_.Factor();
     if (thrust_factor != last_thrust_factor)
     {
         material->SetShaderParameter("MatEmissiveColor", Urho3D::Variant(Urho3D::Vector4(thrust_factor, thrust_factor, thrust_factor, 1.0f)));
@@ -233,7 +282,7 @@ void SpaceshipCtrl::FixedUpdate(float time_step)
     }
 }
 
-void SpaceshipCtrl::AddWeapon(VehicleWeaponCtrl* weapon, const Urho3D::String& slot)
+void ShipCtrl::AddWeapon(VehicleWeaponCtrl* weapon, const Urho3D::String& slot)
 {
     Urho3D::Node* slot_node = node_->GetChild("nSlots")->GetChild(slot);
     if (slot_node)

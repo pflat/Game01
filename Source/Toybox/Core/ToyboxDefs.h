@@ -18,16 +18,26 @@ enum KeyMap
     KM_CHARACTER_WALK = 1 << 7,
 
     //  Spaceship controller map
-    KM_VEHICLE_SPEED_INC = 1 << 0,
-    KM_VEHICLE_SPEED_DEC = 1 << 1,
-    KM_VEHICLE_PITCH_UP = 1 << 2,
-    KM_VEHICLE_PITCH_DOWN = 1 << 3,
-    KM_VEHICLE_YAW_LEFT = 1 << 4,
-    KM_VEHICLE_YAW_RIGHT = 1 << 5,
-    KM_VEHICLE_ROLL_LEFT = 1 << 6,
-    KM_VEHICLE_ROLL_RIGHT = 1 << 7,
-    KM_VEHICLE_SPEED_MAX = 1 << 8,
-    KM_VEHICLE_SPEED_STOP = 1 << 9,
+    KM_VEHICLE_THRUST_X_INC = 1 << 0,
+    KM_VEHICLE_THRUST_X_DEC = 1 << 1,
+    KM_VEHICLE_THRUST_X_MAX = 1 << 2,
+    KM_VEHICLE_THRUST_X_STOP = 1 << 3,
+    KM_VEHICLE_ROT_X_INC = 1 << 4,
+    KM_VEHICLE_ROT_X_DEC = 1 << 5,
+
+    KM_VEHICLE_THRUST_Y_INC = 1 << 6,
+    KM_VEHICLE_THRUST_Y_DEC = 1 << 7,
+    KM_VEHICLE_THRUST_Y_MAX = 1 << 8,
+    KM_VEHICLE_THRUST_Y_STOP = 1 << 9,
+    KM_VEHICLE_ROT_Y_INC = 1 << 10,
+    KM_VEHICLE_ROT_Y_DEC = 1 << 11,
+
+    KM_VEHICLE_THRUST_Z_INC = 1 << 12,
+    KM_VEHICLE_THRUST_Z_DEC = 1 << 13,
+    KM_VEHICLE_THRUST_Z_MAX = 1 << 14,
+    KM_VEHICLE_THRUST_Z_STOP = 1 << 15,
+    KM_VEHICLE_ROT_Z_INC = 1 << 16,
+    KM_VEHICLE_ROT_Z_DEC = 1 << 17,
 
 	//  Camera controller map
 	KM_CAMERA_MODE = 1 << 0,
@@ -88,6 +98,5 @@ enum CollisionLayers
     CL_STATIC = 1 << 2,
     CL_NOCOLLISION = 1 << 3
 };
-
 
 }

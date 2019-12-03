@@ -1,9 +1,9 @@
-#include "../Controllers/VehicleCtrlSystem.h"
+#include "../Controllers/AxisCtrlSystem.h"
 
 namespace Toybox
 {
 
-void VehicleCtrlSystem::Set(float step, float min, float max, float damp)
+void AxisCtrlSystem::Set(float step, float min, float max, float damp)
 {
     step_ = step;
     min_ = min;
@@ -11,8 +11,11 @@ void VehicleCtrlSystem::Set(float step, float min, float max, float damp)
     damp_ = damp;
 }
 
-void VehicleCtrlSystem::Update()
+void AxisCtrlSystem::Update()
 {
+    if (!enabled_)
+        return;
+
     target_ = Urho3D::Clamp(target_, min_, max_);
     if (current_ != target_)
     {

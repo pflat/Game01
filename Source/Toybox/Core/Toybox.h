@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../Core/IncGuards.h"
-#include "../Core/Settings.h"
+#include "../Core/ToyboxDefs.h"
 #include "../Engine/Scene.h"
 #include "../Controllers/CameraCtrl.h"
-#include "../Controllers/SpaceshipCtrl.h"
+#include "../Controllers/ShipCtrl.h"
 #include "../Controllers/KinematicCharacterCtrl.h"
 #include "../Controllers/DynamicCharacterCtrl.h"
 #include "../Controllers/VehicleWeaponCtrl.h"
@@ -26,9 +26,9 @@ void Init();
 
 Scene* LoadScene(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache);
 
-///  Load the spaceship node tree into the scene. Returns the controller of the ship.
-SpaceshipCtrl* LoadSpaceship(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache);
-//Urho3D::Node* LoadSpaceship(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache);
+///  Load the ship node tree into the scene. Returns the controller of the ship.
+ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache);
+//Urho3D::Node* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache);
 
 VehicleWeaponCtrl* LoadWeapon(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache);
 

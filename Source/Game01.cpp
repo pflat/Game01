@@ -62,7 +62,7 @@ Game01::Game01(Urho3D::Context* context) :
     dJulia(0)
 {
     Toybox::CameraCtrl::RegisterObject(context);
-    Toybox::SpaceshipCtrl::RegisterObject(context);
+    Toybox::ShipCtrl::RegisterObject(context);
     Toybox::VehicleWeaponCtrl::RegisterObject(context);
     Toybox::KinematicCharacterCtrl::RegisterObject(context);
     Toybox::DynamicCharacter::RegisterObject(context);
@@ -98,7 +98,7 @@ void Game01::Start()
     camera = Toybox::CreateCamera(context_);
     GetSubsystem<Urho3D::Audio>()->SetListener(camera->GetLookAtNode()->GetComponent<Urho3D::SoundListener>());
 
-	SwitchScene(Toybox::SCENE_GROUND);
+	SwitchScene(Toybox::SCENE_SPACE);
 
 //    CreateConsoleAndDebugHud();
     //engine_->CreateDebugHud();
@@ -261,32 +261,32 @@ void Game01::CreateSpaceScene()
 
     sector = Toybox::LoadScene("sectors/space/corona.xml", scene_space, cache);
 
-    //Toybox::SpaceshipCtrl* ship1 = Toybox::LoadSpaceship("vehicles/space/fighter_a01.xml", scene_space, cache);
+    //Toybox::ShipCtrl* ship1 = Toybox::LoadShip("vehicles/space/fighter_a01.xml", scene_space, cache);
     //ship1->GetNode()->SetPosition(Urho3D::Vector3(-20.0f, 0.0f, 10.0f));
 
-    Toybox::SpaceshipCtrl* ship2 = Toybox::LoadSpaceship("vehicles/space/fighter_a02.xml", scene_space, cache);
+    Toybox::ShipCtrl* ship2 = Toybox::LoadShip("vehicles/space/fighter_a02.xml", scene_space, cache);
     ship2->GetNode()->SetPosition(Urho3D::Vector3(-10.0f, 0.0f, 10.0f));
 
-    //Toybox::SpaceshipCtrl* ship3(Toybox::LoadSpaceship("vehicles/space/fighter_a03.xml", scene_space, cache));
+    //Toybox::ShipCtrl* ship3(Toybox::LoadShip("vehicles/space/fighter_a03.xml", scene_space, cache));
     //ship3->GetNode()->SetPosition(Urho3D::Vector3(0.0f, 0.0f, 10.0f));
 
-    Toybox::SpaceshipCtrl* ship4(Toybox::LoadSpaceship("vehicles/space/fighter_a04.xml", scene_space, cache));
+    Toybox::ShipCtrl* ship4(Toybox::LoadShip("vehicles/space/fighter_a04.xml", scene_space, cache));
     ship4->GetNode()->SetPosition(Urho3D::Vector3(10.0f, 0.0f, 10.0f));
 
-    //Toybox::SpaceshipCtrl* ship5(Toybox::LoadSpaceship("vehicles/space/fighter_a05.xml", scene_space, cache));
+    //Toybox::ShipCtrl* ship5(Toybox::LoadShip("vehicles/space/fighter_a05.xml", scene_space, cache));
     //ship5->GetNode()->SetPosition(Urho3D::Vector3(20.0f, 0.0f, 10.0f));
 
-	//ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship1));
-	//ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship2));
-    //ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship3));
-	//ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship4));
-	//ships.Push(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship5));
+	//ships.Push(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship1));
+	//ships.Push(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship2));
+    //ships.Push(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship3));
+	//ships.Push(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship4));
+	//ships.Push(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship5));
 
-	//ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship1));
-	ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship2));
-    //ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship3));
-	ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship4));
-	//ships.push_back(Urho3D::WeakPtr<Toybox::SpaceshipCtrl>(ship5));
+	//ships.push_back(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship1));
+	ships.push_back(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship2));
+    //ships.push_back(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship3));
+	ships.push_back(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship4));
+	//ships.push_back(Urho3D::WeakPtr<Toybox::ShipCtrl>(ship5));
 
     active_ship = 0;
 	num_ships = 2;
@@ -375,7 +375,7 @@ void Game01::UpdateSpaceHUD()
     Urho3D::UIElement* ui = GetSubsystem<Urho3D::UI>()->GetRoot();
     Urho3D::Text* lblSpeed = static_cast<Urho3D::Text*>(ui->GetChild("lblSpeed", true));
     //lblSpeed->SetText(Urho3D::String(ships[active_ship]->Thrust()));
-    lblSpeed->SetText(Urho3D::String((int)ships[active_ship]->Speedkmh()));
+    lblSpeed->SetText(Urho3D::String((int)ships[active_ship]->SpeedKmh()));
 }
 
 
@@ -739,16 +739,24 @@ void Game01::HandleUpdate(Urho3D::StringHash event_type, Urho3D::VariantMap& eve
     if (active_scene == Toybox::SCENE_SPACE)
     {
         ships[active_ship]->input.Update(input);
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_SPEED_INC, input->GetKeyDown(KEY_VEHICLE_SPEED_INC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_SPEED_DEC, input->GetKeyDown(KEY_VEHICLE_SPEED_DEC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_SPEED_MAX, input->GetKeyDown(KEY_VEHICLE_SPEED_MAX));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_SPEED_STOP, input->GetKeyDown(KEY_VEHICLE_SPEED_STOP));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_YAW_LEFT, input->GetKeyDown(KEY_VEHICLE_YAW_LEFT));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_YAW_RIGHT, input->GetKeyDown(KEY_VEHICLE_YAW_RIGHT));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_PITCH_UP, input->GetKeyDown(KEY_VEHICLE_PITCH_UP));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_PITCH_DOWN, input->GetKeyDown(KEY_VEHICLE_PITCH_DOWN));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROLL_LEFT, input->GetKeyDown(KEY_VEHICLE_ROLL_LEFT));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROLL_RIGHT, input->GetKeyDown(KEY_VEHICLE_ROLL_RIGHT));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_INC, input->GetKeyDown(KEY_VEHICLE_STRAFE_INC));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_DEC, input->GetKeyDown(KEY_VEHICLE_STRAFE_DEC));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_MAX, input->GetKeyDown(KEY_VEHICLE_STRAFE_MAX));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_STOP, input->GetKeyDown(KEY_VEHICLE_STRAFE_STOP));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_X_DEC, input->GetKeyDown(KEY_VEHICLE_PITCH_UP));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_X_INC, input->GetKeyDown(KEY_VEHICLE_PITCH_DOWN));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_INC, input->GetKeyDown(KEY_VEHICLE_UP_INC));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_DEC, input->GetKeyDown(KEY_VEHICLE_UP_DEC));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_MAX, input->GetKeyDown(KEY_VEHICLE_UP_MAX));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_STOP, input->GetKeyDown(KEY_VEHICLE_UP_STOP));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Y_DEC, input->GetKeyDown(KEY_VEHICLE_YAW_LEFT));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Y_INC, input->GetKeyDown(KEY_VEHICLE_YAW_RIGHT));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_INC, input->GetKeyDown(KEY_VEHICLE_FORWARD_INC));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_DEC, input->GetKeyDown(KEY_VEHICLE_FORWARD_DEC));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_MAX, input->GetKeyDown(KEY_VEHICLE_FORWARD_MAX));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_STOP, input->GetKeyDown(KEY_VEHICLE_FORWARD_STOP));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Z_DEC, input->GetKeyDown(KEY_VEHICLE_ROLL_LEFT));
+        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Z_INC, input->GetKeyDown(KEY_VEHICLE_ROLL_RIGHT));
 
 		UpdateSpaceHUD();
     }
@@ -756,15 +764,15 @@ void Game01::HandleUpdate(Urho3D::StringHash event_type, Urho3D::VariantMap& eve
     {
         if (CHAR_CONTROLLER == Toybox::CHAR_CONTROLLER_KINEMATIC)
         {
-            kJulia->input.Update(input);
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_FORWARD, input->GetKeyDown(KEY_CHARACTER_FORWARD));
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_BACKWARD, input->GetKeyDown(KEY_CHARACTER_BACKWARD));
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_STRAFE_LEFT, input->GetKeyDown(KEY_CHARACTER_STRAFE_LEFT));
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_STRAFE_RIGHT, input->GetKeyDown(KEY_CHARACTER_STRAFE_RIGHT));
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_TURN_LEFT, input->GetKeyDown(KEY_CHARACTER_TURN_LEFT));
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_TURN_RIGHT, input->GetKeyDown(KEY_CHARACTER_TURN_RIGHT));
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_JUMP, input->GetKeyDown(KEY_CHARACTER_JUMP));
-            kJulia->input.SetKey(Toybox::KM_CHARACTER_WALK, input->GetKeyDown(KEY_CHARACTER_WALK));
+            kJulia->input_.Update(input);
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_FORWARD, input->GetKeyDown(KEY_CHARACTER_FORWARD));
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_BACKWARD, input->GetKeyDown(KEY_CHARACTER_BACKWARD));
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_STRAFE_LEFT, input->GetKeyDown(KEY_CHARACTER_STRAFE_LEFT));
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_STRAFE_RIGHT, input->GetKeyDown(KEY_CHARACTER_STRAFE_RIGHT));
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_TURN_LEFT, input->GetKeyDown(KEY_CHARACTER_TURN_LEFT));
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_TURN_RIGHT, input->GetKeyDown(KEY_CHARACTER_TURN_RIGHT));
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_JUMP, input->GetKeyDown(KEY_CHARACTER_JUMP));
+            kJulia->input_.SetKey(Toybox::KM_CHARACTER_WALK, input->GetKeyDown(KEY_CHARACTER_WALK));
         }
         else
         {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/IncGuards.h"
-#include "../Core/Settings.h"
+#include "../Core/ToyboxDefs.h"
 #include "../Input/InputState.h"
 
 THIRD_PARTY_GUARDS_BEGIN
@@ -18,6 +18,8 @@ THIRD_PARTY_GUARDS_END
 namespace Toybox
 {
 
+///  Dynamic character controller.
+///  Not implemented. This is dummy rubbish stuff.
 class DynamicCharacter : public Urho3D::LogicComponent
 {
     URHO3D_OBJECT(DynamicCharacter, LogicComponent);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/IncGuards.h"
-#include "../Controllers/VehicleCtrlSystem.h"
+#include "../Controllers/AxisCtrlSystem.h"
 #include "../Controllers/VehicleWeaponCtrl.h"
 #include "../Input/InputState.h"
 
@@ -23,25 +23,14 @@ THIRD_PARTY_GUARDS_END
 
 namespace Toybox
 {
-/*
-const unsigned KEY_SHIP_SPEED_INC = 1 << 0;
-const unsigned KEY_SHIP_SPEED_DEC = 1 << 1;
-const unsigned KEY_SHIP_PITCH_UP = 1 << 2;
-const unsigned KEY_SHIP_PITCH_DOWN = 1 << 3;
-const unsigned KEY_SHIP_YAW_LEFT = 1 << 4;
-const unsigned KEY_SHIP_YAW_RIGHT = 1 << 5;
-const unsigned KEY_SHIP_ROLL_LEFT = 1 << 6;
-const unsigned KEY_SHIP_ROLL_RIGHT = 1 << 7;
-const unsigned KEY_SHIP_SPEED_MAX = 1 << 8;
-const unsigned KEY_SHIP_SPEED_STOP = 1 << 9;
-*/
 
-class SpaceshipCtrl : public Urho3D::LogicComponent
+class ShipCtrl : public Urho3D::LogicComponent
 {
-    URHO3D_OBJECT(SpaceshipCtrl, LogicComponent);
+    URHO3D_OBJECT(ShipCtrl, LogicComponent);
 
     InputState input;
-    VehicleCtrlSystem pitch, yaw, roll, thrust;
+    AxisCtrlSystem thrust_x_, thrust_y_, thrust_z_;
+    AxisCtrlSystem rotate_x_, rotate_y_, rotate_z_;  //  pitch, yaw, roll
 
     Urho3D::WeakPtr<Urho3D::RigidBody> body;
     Urho3D::WeakPtr<Urho3D::Material> material;
@@ -54,7 +43,7 @@ class SpaceshipCtrl : public Urho3D::LogicComponent
     float speed;
 
 public:
-    SpaceshipCtrl(Urho3D::Context* context);
+    ShipCtrl(Urho3D::Context* context);
 
     static void RegisterObject(Urho3D::Context* context);
     virtual void Start();
@@ -62,9 +51,9 @@ public:
 
 	Urho3D::Node* GetCameraNode() { return node_; }
 
-    float Thrust() { return thrust.Value(); } // return thrust.current_; }
+    float Thrust() { return thrust_z_.Value(); }
     float Speed() { return speed; }
-    float Speedkmh() { return speed * 3600 / 1000; }
+    float SpeedKmh() { return speed * 3600 / 1000; }
 
     void AddWeapon(VehicleWeaponCtrl* weapon, const Urho3D::String& slot);
 };

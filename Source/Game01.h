@@ -32,7 +32,7 @@ class Game01 : public Urho3D::Application
 
 	///  Space scene objects
     Urho3D::WeakPtr<Toybox::Scene> sector;
-	std::vector<Urho3D::WeakPtr<Toybox::SpaceshipCtrl> > ships;
+	std::vector<Urho3D::WeakPtr<Toybox::ShipCtrl> > ships;
 	//Urho3D::Vector<Urho3D::WeakPtr<Toybox::SpaceshipCtrl> > ships;
     unsigned num_ships;
     unsigned active_ship;

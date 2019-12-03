@@ -1,5 +1,5 @@
 #include "../Core/Toybox.h"
-#include "../Core/Settings.h"
+#include "../Core/ToyboxDefs.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Scene/Scene.h>
@@ -91,7 +91,7 @@ Scene* LoadScene(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Resour
 
 
 //  ok
-SpaceshipCtrl* LoadSpaceship(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache)
+ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache)
 {
     Urho3D::XMLFile* xml_file = cache->GetResource<Urho3D::XMLFile>(file);
     const Urho3D::XMLElement& xml_elem = xml_file->GetRoot();
@@ -127,34 +127,38 @@ SpaceshipCtrl* LoadSpaceship(const Urho3D::String file, Urho3D::Scene* scene, Ur
     body->SetCollisionEventMode(Urho3D::COLLISION_ALWAYS);
 
 	//  Create Spaceship component and set ship specific properties
-    SpaceshipCtrl* ship = node->CreateComponent<SpaceshipCtrl>();
+    ShipCtrl* ship = node->CreateComponent<ShipCtrl>();
     if (xml_elem.HasChild("thrust"))
     {
-        ship->thrust.Set(xml_elem.GetChild("thrust").GetFloat("step"),
-                         xml_elem.GetChild("thrust").GetFloat("min"),
-                         xml_elem.GetChild("thrust").GetFloat("max"),
-                         xml_elem.GetChild("thrust").GetFloat("damp"));
+        ship->thrust_z_.Set(xml_elem.GetChild("thrust").GetFloat("step"),
+                            xml_elem.GetChild("thrust").GetFloat("min"),
+                            xml_elem.GetChild("thrust").GetFloat("max"),
+                            xml_elem.GetChild("thrust").GetFloat("damp"));
+        ship->thrust_z_.SetEnable(true);
     }
     if (xml_elem.HasChild("pitch"))
     {
-        ship->pitch.Set(xml_elem.GetChild("pitch").GetFloat("step"),
-                        xml_elem.GetChild("pitch").GetFloat("min"),
-                        xml_elem.GetChild("pitch").GetFloat("max"),
-                        xml_elem.GetChild("pitch").GetFloat("damp"));
+        ship->rotate_x_.Set(xml_elem.GetChild("pitch").GetFloat("step"),
+                            xml_elem.GetChild("pitch").GetFloat("min"),
+                            xml_elem.GetChild("pitch").GetFloat("max"),
+                            xml_elem.GetChild("pitch").GetFloat("damp"));
+        ship->rotate_x_.SetEnable(true);
     }
     if (xml_elem.HasChild("yaw"))
     {
-        ship->yaw.Set(xml_elem.GetChild("yaw").GetFloat("step"),
-                      xml_elem.GetChild("yaw").GetFloat("min"),
-                      xml_elem.GetChild("yaw").GetFloat("max"),
-                      xml_elem.GetChild("yaw").GetFloat("damp"));
+        ship->rotate_y_.Set(xml_elem.GetChild("yaw").GetFloat("step"),
+                            xml_elem.GetChild("yaw").GetFloat("min"),
+                            xml_elem.GetChild("yaw").GetFloat("max"),
+                            xml_elem.GetChild("yaw").GetFloat("damp"));
+        ship->rotate_y_.SetEnable(true);
     }
     if (xml_elem.HasChild("roll"))
     {
-        ship->roll.Set(xml_elem.GetChild("roll").GetFloat("step"),
-                       xml_elem.GetChild("roll").GetFloat("min"),
-                       xml_elem.GetChild("roll").GetFloat("max"),
-                       xml_elem.GetChild("roll").GetFloat("damp"));
+        ship->rotate_z_.Set(xml_elem.GetChild("roll").GetFloat("step"),
+                            xml_elem.GetChild("roll").GetFloat("min"),
+                            xml_elem.GetChild("roll").GetFloat("max"),
+                            xml_elem.GetChild("roll").GetFloat("damp"));
+        ship->rotate_z_.SetEnable(true);
     }
 
     for (Urho3D::XMLElement child_elem = xml_elem.GetChild("node"); child_elem; child_elem = child_elem.GetNext("node"))
@@ -279,8 +283,7 @@ KinematicCharacterCtrl* LoadKinematicCharacter(const Urho3D::String file, Urho3D
     //body->SetCollisionEventMode(Urho3D::COLLISION_ALWAYS);
 
 	KinematicCharacterCtrl* kc = node->CreateComponent<KinematicCharacterCtrl>();
-    kc->Init(spring_height);
-    kc->Init(10.0f, 5.0f, 7.0f, 5.0f, jump_strength, 0.25f, 1.0f, gravity, Urho3D::Cos(45.0f));
+    kc->Init(10.0f, 5.0f, 7.0f, jump_strength, 5.0f, 0.25f, 1.0f, gravity, Urho3D::Cos(45.0f), spring_height);
     return kc;
 }
 

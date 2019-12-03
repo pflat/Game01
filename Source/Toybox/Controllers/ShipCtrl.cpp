@@ -194,10 +194,6 @@ void ShipCtrl::FixedUpdate(float time_step)
     body->SetRotation(ship_rot * time_step);
     body->SetLinearVelocity(((local_x * thrust_x_.Value()) + (local_y * thrust_y_.Value()) + (local_z * thrust_z_.Value())) * time_step);
 
-    //printf("%s\n", node_->GetName().CString());
-    //if (node_->GetName() == "Buzzard")
-    //    printf("%f %f %f\n", body->GetRotation().PitchAngle(), body->GetRotation().YawAngle(), body->GetRotation().RollAngle());
-
     speed = (body->GetPosition() - last_pos).Length() / time_step;
     last_pos = body->GetPosition();
 

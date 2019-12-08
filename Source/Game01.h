@@ -11,6 +11,7 @@ THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Audio/SoundSource.h>
+#include <Urho3D/Container/Vector.h>
 THIRD_PARTY_GUARDS_END
 
 
@@ -33,7 +34,7 @@ class Game01 : public Urho3D::Application
 	///  Space scene objects
     Urho3D::WeakPtr<Toybox::Scene> sector;
 	std::vector<Urho3D::WeakPtr<Toybox::ShipCtrl> > ships;
-	//Urho3D::Vector<Urho3D::WeakPtr<Toybox::SpaceshipCtrl> > ships;
+	//Urho3D::Vector<Urho3D::WeakPtr<Toybox::ShipCtrl> > ships;
     unsigned num_ships;
     unsigned active_ship;
 
@@ -58,6 +59,7 @@ private:
 
 	void LoadSettings(const Urho3D::String& file_name);
 	void SaveSettings(const Urho3D::String& file_name);
+	void CreateDefaultControlMap();
     void ListAllResources();
 
     void CreateSpaceScene();

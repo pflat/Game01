@@ -1,5 +1,5 @@
 #include "../Controllers/CameraCtrl.h"
-#include "../Core/Settings.h"
+#include "../Core/ToyboxDefs.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Engine/Application.h>
@@ -85,7 +85,7 @@ void CameraCtrl::SetType(unsigned type)
 {
 	if (camera_mode_ == CAMERA_MODE_FREE)
 		return;
-    
+
 	camera_type_ = type;
 }
 
@@ -263,9 +263,9 @@ void CameraCtrl::UpdateCamera(float time_step)
     if (camera_mode_ == CAMERA_MODE_FREE)
     {
         // Use this frame's mouse motion to adjust camera node yaw and pitch. Clamp the pitch between -90 and 90 degrees
-		free_settings_.pitch_ += input_.mouse_y * general_settings_.mouse_sensitivity_ * free_settings_.invert_pitch_ * time_step;
+		free_settings_.pitch_ += controls_.MouseMove().y_ * general_settings_.mouse_sensitivity_ * free_settings_.invert_pitch_ * time_step;
         free_settings_.pitch_ = Urho3D::Clamp(free_settings_.pitch_, -89.0f, 89.0f);
-        free_settings_.yaw_ += input_.mouse_x * general_settings_.mouse_sensitivity_ * time_step;
+        free_settings_.yaw_ += controls_.MouseMove().x_ * general_settings_.mouse_sensitivity_ * time_step;
         if (Urho3D::Abs(free_settings_.yaw_) > 180.0f)
         {
             free_settings_.yaw_ = free_settings_.yaw_ + (Urho3D::Sign(free_settings_.yaw_) * 360.0f *  -1.0f);
@@ -276,27 +276,27 @@ void CameraCtrl::UpdateCamera(float time_step)
 
         // Read control keys and move the camera scene node to the corresponding direction if they are pressed
         // Use the Translate() function (default local space) to move relative to the node's orientation.
-        if (input_.IsKeyDown(KM_CAMERA_FORWARD))
+        if (controls_.IsDown(KM_CAMERA_FORWARD))
         {
             node_->Translate(Urho3D::Vector3::FORWARD * general_settings_.keyboard_sensitivity_ * time_step);
         }
-        else if (input_.IsKeyDown(KM_CAMERA_BACKWARD))
+        else if (controls_.IsDown(KM_CAMERA_BACKWARD))
         {
             node_->Translate(Urho3D::Vector3::BACK * general_settings_.keyboard_sensitivity_ * time_step);
         }
-        if (input_.IsKeyDown(KM_CAMERA_PAN_LEFT))
+        if (controls_.IsDown(KM_CAMERA_PAN_LEFT))
         {
             node_->Translate(Urho3D::Vector3::LEFT * general_settings_.keyboard_sensitivity_ * time_step);
         }
-        else if (input_.IsKeyDown(KM_CAMERA_PAN_RIGHT))
+        else if (controls_.IsDown(KM_CAMERA_PAN_RIGHT))
         {
             node_->Translate(Urho3D::Vector3::RIGHT * general_settings_.keyboard_sensitivity_ * time_step);
         }
-        if (input_.IsKeyDown(KM_CAMERA_ROLL_LEFT))
+        if (controls_.IsDown(KM_CAMERA_ROLL_LEFT))
         {
             free_settings_.roll_ += general_settings_.keyboard_sensitivity_ * 5 * time_step;
         }
-        else if (input_.IsKeyDown(KM_CAMERA_ROLL_RIGHT))
+        else if (controls_.IsDown(KM_CAMERA_ROLL_RIGHT))
         {
             free_settings_.roll_ -= general_settings_.keyboard_sensitivity_ * 5 * time_step;
         }
@@ -304,20 +304,20 @@ void CameraCtrl::UpdateCamera(float time_step)
 
     else if (camera_mode_ == CAMERA_MODE_FOLLOW && camera_type_ == CAMERA_TYPE_VEHICLE)
     {
-        if (input_.IsButtonDown(MM_BUTTON_RIGHT))
+        if (controls_.IsDown(KM_CAMERA_MOVE))
         {
             is_reseting_ = false;
 
-            vehicle_settings_.pitch_ += input_.mouse_y * general_settings_.mouse_sensitivity_ * vehicle_settings_.invert_pitch_ * time_step;
+            vehicle_settings_.pitch_ += controls_.MouseMove().y_ * general_settings_.mouse_sensitivity_ * vehicle_settings_.invert_pitch_ * time_step;
             vehicle_settings_.pitch_ = Urho3D::Clamp(vehicle_settings_.pitch_, -89.0f, 89.0f);
-            vehicle_settings_.yaw_ += input_.mouse_x * general_settings_.mouse_sensitivity_ * time_step;
+            vehicle_settings_.yaw_ += controls_.MouseMove().x_ * general_settings_.mouse_sensitivity_ * time_step;
             if (Urho3D::Abs(vehicle_settings_.yaw_) > 180.0f)
             {
                 vehicle_settings_.yaw_ = vehicle_settings_.yaw_ + (Urho3D::Sign(vehicle_settings_.yaw_) * 360.0f *  -1.0f);
             }
         }
 
-        vehicle_settings_.distance_ -= input_.mouse_wheel * 20 * general_settings_.mouse_sensitivity_ * time_step;
+        vehicle_settings_.distance_ -= controls_.MouseWheel() * 20 * general_settings_.mouse_sensitivity_ * time_step;
 
         Urho3D::Quaternion camera_rot(lookat_node_->GetWorldRotation());
         camera_rot = camera_rot * Urho3D::Quaternion(vehicle_settings_.yaw_, Urho3D::Vector3::UP);
@@ -337,20 +337,20 @@ void CameraCtrl::UpdateCamera(float time_step)
 //printf("(%f, %f, %f)\n", lookat_node->GetWorldRotation().YawAngle(), lookat_node->GetWorldRotation().PitchAngle(), lookat_node->GetWorldRotation().RollAngle());
         float p = lookat_node_->GetWorldRotation().PitchAngle();
 
-        if (input_.IsButtonDown(MM_BUTTON_RIGHT))
+        if (controls_.IsDown(KM_CAMERA_MOVE))
         {
             is_reseting_ = false;
 
-            character_settings_.pitch_ += input_.mouse_y * general_settings_.mouse_sensitivity_ * character_settings_.invert_pitch_ * time_step;
+            character_settings_.pitch_ += controls_.MouseMove().y_ * general_settings_.mouse_sensitivity_ * character_settings_.invert_pitch_ * time_step;
             character_settings_.pitch_ = Urho3D::Clamp(character_settings_.pitch_, -89.0f, 89.0f);
-            character_settings_.yaw_ += input_.mouse_x * general_settings_.mouse_sensitivity_ * time_step;
+            character_settings_.yaw_ += controls_.MouseMove().x_ * general_settings_.mouse_sensitivity_ * time_step;
             if (Urho3D::Abs(character_settings_.yaw_) > 180.0f)
             {
                 character_settings_.yaw_ = character_settings_.yaw_ + (Urho3D::Sign(character_settings_.yaw_) * 360.0f *  -1.0f);
             }
         }
 
-        character_settings_.distance_ -= input_.mouse_wheel * 20 * general_settings_.mouse_sensitivity_ * time_step;
+        character_settings_.distance_ -= controls_.MouseWheel() * 20 * general_settings_.mouse_sensitivity_ * time_step;
 
         Urho3D::Quaternion camera_rot(lookat_node_->GetWorldRotation());
         camera_rot = camera_rot * Urho3D::Quaternion(-p, Urho3D::Vector3::RIGHT);

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../Core/IncGuards.h"
-#include "../Core/Settings.h"
-#include "../Input/InputState.h"
+#include "../Core/ToyboxDefs.h"
+#include "../Input/Controls.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Core/Context.h>

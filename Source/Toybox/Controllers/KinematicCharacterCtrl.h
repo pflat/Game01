@@ -2,7 +2,7 @@
 
 #include "../Core/IncGuards.h"
 #include "../Core/ToyboxDefs.h"
-#include "../Input/InputState.h"
+#include "../Input/Controls.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Core/Context.h>
@@ -56,6 +56,9 @@ public:
 
     ///  \todo  Add methods to get/set all previous values individually.
 
+    void UpdateControls(Urho3D::Input* input) { controls_.Update(input); }
+    void SetControl(int control, bool active) { controls_.Set(control, active); }
+
     ///  Returns the camera node. This can be used as a target node for the camera.
     Urho3D::Node* GetCameraNode() { return camera_node_; }
 
@@ -92,9 +95,9 @@ private:
     ///  Debug - TO BE REMOVED
     void PrintState();
 
-public:
+private:
     ///  Input state class (keyboard and mouse).
-    InputState input_;
+    Controls controls_;
 
 private:
     ///  Length of the "leg" under the capsule shape.

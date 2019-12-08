@@ -3,8 +3,9 @@
 namespace Toybox
 {
 
-void AxisCtrlSystem::Set(float step, float min, float max, float damp)
+void AxisCtrlSystem::Set(AxisCtrlMode mode, float step, float min, float max, float damp)
 {
+    mode_ = mode;
     step_ = step;
     min_ = min;
     max_ = max;
@@ -42,6 +43,19 @@ void AxisCtrlSystem::Update()
             current_ -= step_;
             current_ = Urho3D::Max<float>(target_, current_);
         }
+    }
+}
+
+
+Urho3D::Vector3 AxisCtrlSystem::Velocity(const Urho3D::Vector3& axis, const Urho3D::Quaternion& rot)
+{
+    if (mode_ == AXIS_MODE_LOCAL)
+    {
+        return rot * axis * current_;
+    }
+    else
+    {
+        return axis * current_;
     }
 }
 

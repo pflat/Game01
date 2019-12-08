@@ -1,5 +1,6 @@
 #include "Game01.h"
 #include "Settings.h"
+#include "Toybox/Input/ControlMap.h"
 #include "Toybox/Math/Vector3Ext.h"
 
 THIRD_PARTY_GUARDS_BEGIN
@@ -34,8 +35,8 @@ THIRD_PARTY_GUARDS_BEGIN
 //#include <Urho3D/UI/Sprite.h>
 //#include <Urho3D/Engine/Console.h>
 #include <Urho3D/Graphics/DebugRenderer.h> //  To remove
-#include <Urho3D/Input/Input.h>
-#include <Urho3D/Input/InputEvents.h>
+//#include <Urho3D/Input/Input.h>
+//#include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/Resource/ResourceCache.h>
 //#include <Urho3D/Graphics/Texture2D.h>
@@ -72,6 +73,7 @@ Game01::Game01(Urho3D::Context* context) :
 
 void Game01::Setup()
 {
+	CreateDefaultControlMap();
 	LoadSettings("game01.settings");
 
     engineParameters_[Urho3D::EP_WINDOW_TITLE] = GetTypeName();
@@ -249,6 +251,67 @@ void Game01::SaveSettings(const Urho3D::String& file_name)
 }
 
 
+void Game01::CreateDefaultControlMap()
+{
+	//  Debug controls
+    Toybox::ControlMap::Set("Debug.TextureQuality", Urho3D::QUAL_CTRL, Urho3D::KEY_F1, 0);
+    Toybox::ControlMap::Set("Debug.MaterialQuality", Urho3D::QUAL_CTRL, Urho3D::KEY_F2, 0);
+    Toybox::ControlMap::Set("Debug.SpecularLighting", Urho3D::QUAL_CTRL, Urho3D::KEY_F3, 0);
+    Toybox::ControlMap::Set("Debug.ShadowRendering", Urho3D::QUAL_CTRL, Urho3D::KEY_F4, 0);
+    Toybox::ControlMap::Set("Debug.ShadowResolution", Urho3D::QUAL_CTRL, Urho3D::KEY_F5, 0);
+    Toybox::ControlMap::Set("Debug.ShadowFiltering", Urho3D::QUAL_CTRL, Urho3D::KEY_F6, 0);
+    Toybox::ControlMap::Set("Debug.OcclusionCulling", Urho3D::QUAL_CTRL, Urho3D::KEY_F7, 0);
+    Toybox::ControlMap::Set("Debug.DynamicInstancing", Urho3D::QUAL_CTRL, Urho3D::KEY_F8, 0);
+    Toybox::ControlMap::Set("Debug.DebugGeometry", Urho3D::QUAL_CTRL, Urho3D::KEY_F9, 0);
+    Toybox::ControlMap::Set("Debug.DebugHUD", Urho3D::QUAL_CTRL, Urho3D::KEY_F10, 0);
+
+    //  General controls
+    Toybox::ControlMap::Set("General.SceneSwitch", Urho3D::QUAL_CTRL, Urho3D::KEY_TAB, 0);
+	Toybox::ControlMap::Set("General.CameraReset", 0, Urho3D::KEY_C, 0);
+	Toybox::ControlMap::Set("General.CameraFree", 0, Urho3D::KEY_F, 0);
+	Toybox::ControlMap::Set("General.ScreenShot", 0, Urho3D::KEY_PRINTSCREEN, 0);
+	Toybox::ControlMap::Set("General.Quit", 0, Urho3D::KEY_ESCAPE, 0);
+
+	//  Ship controls
+	Toybox::ControlMap::Set("Ship.PrevShip", 0, Urho3D::KEY_PAGEDOWN, 0);
+	Toybox::ControlMap::Set("Ship.NextShip", 0, Urho3D::KEY_PAGEUP, 0);
+	Toybox::ControlMap::Set("Ship.StrafeLeft", Urho3D::QUAL_SHIFT, Urho3D::KEY_Q, 0);
+	Toybox::ControlMap::Set("Ship.StrafeRight", Urho3D::QUAL_SHIFT, Urho3D::KEY_E, 0);
+	Toybox::ControlMap::Set("Ship.PitchUp", 0, Urho3D::KEY_W, 0);
+	Toybox::ControlMap::Set("Ship.PitchDown", 0, Urho3D::KEY_S, 0);
+	Toybox::ControlMap::Set("Ship.LiftUp", Urho3D::QUAL_SHIFT, Urho3D::KEY_KP_PLUS, 0);
+	Toybox::ControlMap::Set("Ship.LiftDown", Urho3D::QUAL_SHIFT, Urho3D::KEY_KP_MINUS, 0);
+	Toybox::ControlMap::Set("Ship.YawLeft", 0, Urho3D::KEY_A, 0);
+	Toybox::ControlMap::Set("Ship.YawRight", 0, Urho3D::KEY_D, 0);
+	Toybox::ControlMap::Set("Ship.ThrustInc", 0, Urho3D::KEY_KP_PLUS, 0);
+	Toybox::ControlMap::Set("Ship.ThrustDec", 0, Urho3D::KEY_KP_MINUS, 0);
+	Toybox::ControlMap::Set("Ship.ThrustMax", 0, Urho3D::KEY_TAB, 0);
+	Toybox::ControlMap::Set("Ship.ThrustStop", 0, Urho3D::KEY_BACKSPACE, 0);
+	Toybox::ControlMap::Set("Ship.RollLeft", 0, Urho3D::KEY_Q, 0);
+	Toybox::ControlMap::Set("Ship.RollRight", 0, Urho3D::KEY_E, 0);
+
+	//  Character controls
+	Toybox::ControlMap::Set("Character.Forward", 0, Urho3D::KEY_W, 0, true);
+	Toybox::ControlMap::Set("Character.Backward", 0, Urho3D::KEY_S, 0, true);
+	Toybox::ControlMap::Set("Character.TurnLeft", 0, Urho3D::KEY_A, 0, true);
+	Toybox::ControlMap::Set("Character.TurnRight", 0, Urho3D::KEY_D, 0, true);
+	Toybox::ControlMap::Set("Character.StrafeLeft", 0, Urho3D::KEY_Q, 0, true);
+	Toybox::ControlMap::Set("Character.StrafeRight", 0, Urho3D::KEY_E, 0, true);
+	Toybox::ControlMap::Set("Character.Jump", 0, Urho3D::KEY_SPACE, 0, true);
+	Toybox::ControlMap::Set("Character.Walk", Urho3D::QUAL_SHIFT, Urho3D::KEY_UNKNOWN, 0);
+	Toybox::ControlMap::Set("Character.Crouch", 0, Urho3D::KEY_C, 0);
+
+	//  Camera controls
+	Toybox::ControlMap::Set("Camera.Move", 0, 0, Urho3D::MOUSEB_RIGHT, true);
+	Toybox::ControlMap::Set("Camera.Forward", 0, Urho3D::KEY_I, 0);
+	Toybox::ControlMap::Set("Camera.Backward", 0, Urho3D::KEY_K, 0);
+	Toybox::ControlMap::Set("Camera.PanLeft", 0, Urho3D::KEY_J, 0);
+	Toybox::ControlMap::Set("Camera.PanRight", 0, Urho3D::KEY_L, 0);
+	Toybox::ControlMap::Set("Camera.RollLeft", 0, Urho3D::KEY_U, 0);
+	Toybox::ControlMap::Set("Camera.RollRight", 0, Urho3D::KEY_O, 0);
+}
+
+
 void Game01::CreateSpaceScene()
 {
     Urho3D::ResourceCache* cache = GetSubsystem<Urho3D::ResourceCache>();
@@ -290,7 +353,6 @@ void Game01::CreateSpaceScene()
 
     active_ship = 0;
 	num_ships = 2;
-
 
 //    Toybox::VehicleWeaponCtrl* weapon01 = Toybox::LoadWeapon("weapons/space/cannon_a01.xml", scene_space, cache);
 //    ship1->AddWeapon(weapon01, "nSlot01");
@@ -581,12 +643,10 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
     Urho3D::Renderer* renderer = GetSubsystem<Urho3D::Renderer>();
 
     int key = event_data[Urho3D::KeyUp::P_KEY].GetInt();
-    bool key_ctrl = input->GetQualifierDown(Urho3D::QUAL_CTRL);
-    //bool key_alt = input->GetQualifierDown(Urho3D::QUAL_ALT);
-    //bool key_shift = input->GetQualifierDown(Urho3D::QUAL_SHIFT);
+    int qualifiers = input->GetQualifiers();
 
     //  Texture quality
-    if (key == Urho3D::KEY_F1 && key_ctrl)
+	if (Toybox::ControlMap::Test("Debug.TextureQuality", qualifiers, key, 0))
     {
         int quality = renderer->GetTextureQuality();
         ++quality;
@@ -596,7 +656,7 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
     }
 
     //  Material quality
-    else if (key == Urho3D::KEY_F2 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.MaterialQuality", qualifiers, key, 0))
     {
         int quality = renderer->GetMaterialQuality();
         ++quality;
@@ -606,19 +666,19 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
     }
 
     //  Specular lighting
-    else if (key == Urho3D::KEY_F3 && key_ctrl)
+	else if (Toybox::ControlMap::Test("Debug.SpecularLighting", qualifiers, key, 0))
     {
         renderer->SetSpecularLighting(!renderer->GetSpecularLighting());
     }
 
     //  Shadow rendering
-    else if (key == Urho3D::KEY_F4 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.ShadowRendering", qualifiers, key, 0))
     {
         renderer->SetDrawShadows(!renderer->GetDrawShadows());
     }
 
     //  Shadow map resolution
-    else if (key == Urho3D::KEY_F5 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.ShadowResolution", qualifiers, key, 0))
     {
         int shadowMapSize = renderer->GetShadowMapSize();
         shadowMapSize *= 2;
@@ -628,7 +688,7 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
     }
 
     //  Shadow depth and filtering quality
-    else if (key == Urho3D::KEY_F6 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.ShadowFiltering", qualifiers, key, 0))
     {
         Urho3D::ShadowQuality quality = renderer->GetShadowQuality();
         quality = (Urho3D::ShadowQuality)(quality + 1);
@@ -638,7 +698,7 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
     }
 
     //  Occlusion culling
-    else if (key == Urho3D::KEY_F7 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.OcclusionCulling", qualifiers, key, 0))
     {
         bool occlusion = renderer->GetMaxOccluderTriangles() > 0;
         occlusion = !occlusion;
@@ -646,32 +706,32 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
     }
 
     //  Instancing
-    else if (key == Urho3D::KEY_F8 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.DynamicInstancing", qualifiers, key, 0))
     {
         renderer->SetDynamicInstancing(!renderer->GetDynamicInstancing());
     }
 
     //  Draw debug geometry
-    else if (key == Urho3D::KEY_F9 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.DebugGeometry", qualifiers, key, 0))
     {
         draw_debug = !draw_debug;
     }
 
     //  Print debug information
-    else if (key == Urho3D::KEY_F10 && key_ctrl)
+    else if (Toybox::ControlMap::Test("Debug.DebugHUD", qualifiers, key, 0))
     {
         GetSubsystem<Urho3D::DebugHud>()->ToggleAll();
     }
 
     //  Switch between scenes (SPACE / GROUND)
-    else if (key == Urho3D::KEY_TAB && key_ctrl)
+    else if (Toybox::ControlMap::Test("General.SceneSwitch", qualifiers, key, 0))
     {
         change_scene = 1;
     }
 
 
     // Close console (if open) or exit when ESC is pressed
-    if (key == Urho3D::KEY_ESCAPE)
+    if (Toybox::ControlMap::Test("General.Quit", qualifiers, key, 0))
     {
         //Urho3D::Console* console = GetSubsystem<Urho3D::Console>();
         //if (console->IsVisible())
@@ -679,7 +739,7 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
         //else
             engine_->Exit();
     }
-    else if (key == Urho3D::KEY_PRINTSCREEN)
+    else if (Toybox::ControlMap::Test("General.ScreenShot", qualifiers, key, 0))
     {
         Urho3D::Graphics* graphics = GetSubsystem<Urho3D::Graphics>();
         Urho3D::Image screenshot(context_);
@@ -703,15 +763,15 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
         sprintf(ss_number, "%04d", largest_ss + 1);
         screenshot.SavePNG(fs->GetCurrentDir() + "/Screenshots/" + "Screenshot_" + ss_number + ".png");
     }
-    else if (key == Urho3D::KEY_C)
+    else if (Toybox::ControlMap::Test("General.CameraReset", qualifiers, key, 0))
     {
         camera->Reset();
     }
-    else if (key == Urho3D::KEY_F)
+    else if (Toybox::ControlMap::Test("General.CameraFree", qualifiers, key, 0))
     {
         camera->SwitchMode();
     }
-    else if (key == Urho3D::KEY_PAGEUP)
+    else if (Toybox::ControlMap::Test("Ship.NextShip", qualifiers, key, 0))
     {
         if (active_scene == Toybox::SCENE_SPACE)
         {
@@ -720,7 +780,7 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
             camera->SetTarget(ships[active_ship]->GetNode());
         }
     }
-    else if (key == Urho3D::KEY_PAGEDOWN)
+    else if (Toybox::ControlMap::Test("Ship.PrevShip", qualifiers, key, 0))
     {
         if (active_scene == Toybox::SCENE_SPACE)
         {
@@ -735,28 +795,23 @@ void Game01::HandleKeyUp(Urho3D::StringHash event_type, Urho3D::VariantMap& even
 void Game01::HandleUpdate(Urho3D::StringHash event_type, Urho3D::VariantMap& event_data)
 {
     Urho3D::Input* input = GetSubsystem<Urho3D::Input>();
-
     if (active_scene == Toybox::SCENE_SPACE)
     {
-        ships[active_ship]->input.Update(input);
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_INC, input->GetKeyDown(KEY_VEHICLE_STRAFE_INC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_DEC, input->GetKeyDown(KEY_VEHICLE_STRAFE_DEC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_MAX, input->GetKeyDown(KEY_VEHICLE_STRAFE_MAX));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_X_STOP, input->GetKeyDown(KEY_VEHICLE_STRAFE_STOP));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_X_DEC, input->GetKeyDown(KEY_VEHICLE_PITCH_UP));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_X_INC, input->GetKeyDown(KEY_VEHICLE_PITCH_DOWN));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_INC, input->GetKeyDown(KEY_VEHICLE_UP_INC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_DEC, input->GetKeyDown(KEY_VEHICLE_UP_DEC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_MAX, input->GetKeyDown(KEY_VEHICLE_UP_MAX));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Y_STOP, input->GetKeyDown(KEY_VEHICLE_UP_STOP));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Y_DEC, input->GetKeyDown(KEY_VEHICLE_YAW_LEFT));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Y_INC, input->GetKeyDown(KEY_VEHICLE_YAW_RIGHT));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_INC, input->GetKeyDown(KEY_VEHICLE_FORWARD_INC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_DEC, input->GetKeyDown(KEY_VEHICLE_FORWARD_DEC));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_MAX, input->GetKeyDown(KEY_VEHICLE_FORWARD_MAX));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_THRUST_Z_STOP, input->GetKeyDown(KEY_VEHICLE_FORWARD_STOP));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Z_DEC, input->GetKeyDown(KEY_VEHICLE_ROLL_LEFT));
-        ships[active_ship]->input.SetKey(Toybox::KM_VEHICLE_ROT_Z_INC, input->GetKeyDown(KEY_VEHICLE_ROLL_RIGHT));
+        ships[active_ship]->UpdateControls(input);
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_X_INC, Toybox::ControlMap::Test("Ship.StrafeRight", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_X_DEC, Toybox::ControlMap::Test("Ship.StrafeLeft", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_ROT_X_DEC, Toybox::ControlMap::Test("Ship.PitchDown", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_ROT_X_INC, Toybox::ControlMap::Test("Ship.PitchUp", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_Y_INC, Toybox::ControlMap::Test("Ship.LiftUp", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_Y_DEC, Toybox::ControlMap::Test("Ship.LiftDown", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_ROT_Y_DEC, Toybox::ControlMap::Test("Ship.YawLeft", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_ROT_Y_INC, Toybox::ControlMap::Test("Ship.YawRight", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_Z_INC, Toybox::ControlMap::Test("Ship.ThrustInc", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_Z_DEC, Toybox::ControlMap::Test("Ship.ThrustDec", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_Z_MAX, Toybox::ControlMap::Test("Ship.ThrustMax", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_THRUST_Z_STOP, Toybox::ControlMap::Test("Ship.ThrustStop", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_ROT_Z_DEC, Toybox::ControlMap::Test("Ship.RollLeft", input));
+        ships[active_ship]->SetControl(Toybox::KM_VEHICLE_ROT_Z_INC, Toybox::ControlMap::Test("Ship.RollRight", input));
 
 		UpdateSpaceHUD();
     }
@@ -764,27 +819,27 @@ void Game01::HandleUpdate(Urho3D::StringHash event_type, Urho3D::VariantMap& eve
     {
         if (CHAR_CONTROLLER == Toybox::CHAR_CONTROLLER_KINEMATIC)
         {
-            kJulia->input_.Update(input);
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_FORWARD, input->GetKeyDown(KEY_CHARACTER_FORWARD));
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_BACKWARD, input->GetKeyDown(KEY_CHARACTER_BACKWARD));
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_STRAFE_LEFT, input->GetKeyDown(KEY_CHARACTER_STRAFE_LEFT));
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_STRAFE_RIGHT, input->GetKeyDown(KEY_CHARACTER_STRAFE_RIGHT));
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_TURN_LEFT, input->GetKeyDown(KEY_CHARACTER_TURN_LEFT));
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_TURN_RIGHT, input->GetKeyDown(KEY_CHARACTER_TURN_RIGHT));
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_JUMP, input->GetKeyDown(KEY_CHARACTER_JUMP));
-            kJulia->input_.SetKey(Toybox::KM_CHARACTER_WALK, input->GetKeyDown(KEY_CHARACTER_WALK));
+            kJulia->UpdateControls(input);
+            kJulia->SetControl(Toybox::KM_CHARACTER_FORWARD, Toybox::ControlMap::Test("Character.Forward", input));
+            kJulia->SetControl(Toybox::KM_CHARACTER_BACKWARD, Toybox::ControlMap::Test("Character.Backward", input));
+            kJulia->SetControl(Toybox::KM_CHARACTER_STRAFE_LEFT, Toybox::ControlMap::Test("Character.StrafeLeft", input));
+            kJulia->SetControl(Toybox::KM_CHARACTER_STRAFE_RIGHT, Toybox::ControlMap::Test("Character.StrafeRight", input));
+            kJulia->SetControl(Toybox::KM_CHARACTER_TURN_LEFT, Toybox::ControlMap::Test("Character.TurnLeft", input));
+            kJulia->SetControl(Toybox::KM_CHARACTER_TURN_RIGHT, Toybox::ControlMap::Test("Character.TurnRight", input));
+            kJulia->SetControl(Toybox::KM_CHARACTER_JUMP, Toybox::ControlMap::Test("Character.Jump", input));
+            kJulia->SetControl(Toybox::KM_CHARACTER_WALK, Toybox::ControlMap::Test("Character.Walk", input));
         }
         else
         {
-            dJulia->input.Update(input);
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_FORWARD, input->GetKeyDown(KEY_CHARACTER_FORWARD));
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_BACKWARD, input->GetKeyDown(KEY_CHARACTER_BACKWARD));
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_STRAFE_LEFT, input->GetKeyDown(KEY_CHARACTER_STRAFE_LEFT));
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_STRAFE_RIGHT, input->GetKeyDown(KEY_CHARACTER_STRAFE_RIGHT));
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_TURN_LEFT, input->GetKeyDown(KEY_CHARACTER_TURN_LEFT));
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_TURN_RIGHT, input->GetKeyDown(KEY_CHARACTER_TURN_RIGHT));
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_JUMP, input->GetKeyDown(KEY_CHARACTER_JUMP));
-            dJulia->input.SetKey(Toybox::KM_CHARACTER_WALK, input->GetKeyDown(KEY_CHARACTER_WALK));
+            dJulia->UpdateControls(input);
+            dJulia->SetControl(Toybox::KM_CHARACTER_FORWARD, Toybox::ControlMap::Test("Character.Forward", input));
+            dJulia->SetControl(Toybox::KM_CHARACTER_BACKWARD, Toybox::ControlMap::Test("Character.Backward", input));
+            dJulia->SetControl(Toybox::KM_CHARACTER_STRAFE_LEFT, Toybox::ControlMap::Test("Character.StrafeLeft", input));
+            dJulia->SetControl(Toybox::KM_CHARACTER_STRAFE_RIGHT, Toybox::ControlMap::Test("Character.StrafeRight", input));
+            dJulia->SetControl(Toybox::KM_CHARACTER_TURN_LEFT, Toybox::ControlMap::Test("Character.TurnLeft", input));
+            dJulia->SetControl(Toybox::KM_CHARACTER_TURN_RIGHT, Toybox::ControlMap::Test("Character.TurnRight", input));
+            dJulia->SetControl(Toybox::KM_CHARACTER_JUMP, Toybox::ControlMap::Test("Character.Jump", input));
+            dJulia->SetControl(Toybox::KM_CHARACTER_WALK, Toybox::ControlMap::Test("Character.Walk", input));
         }
 
         UpdateGroundHUD();
@@ -797,13 +852,14 @@ void Game01::HandlePostUpdate(Urho3D::StringHash event_type, Urho3D::VariantMap&
     float time_step = event_data[Urho3D::Update::P_TIMESTEP].GetFloat();
 
     Urho3D::Input* input = GetSubsystem<Urho3D::Input>();
-    camera->input_.Update(input);
-    camera->input_.SetKey(Toybox::KM_CAMERA_FORWARD, input->GetKeyDown(KEY_CAMERA_FORWARD));
-    camera->input_.SetKey(Toybox::KM_CAMERA_BACKWARD, input->GetKeyDown(KEY_CAMERA_BACKWARD));
-    camera->input_.SetKey(Toybox::KM_CAMERA_PAN_LEFT, input->GetKeyDown(KEY_CAMERA_PAN_LEFT));
-    camera->input_.SetKey(Toybox::KM_CAMERA_PAN_RIGHT, input->GetKeyDown(KEY_CAMERA_PAN_RIGHT));
-    camera->input_.SetKey(Toybox::KM_CAMERA_ROLL_LEFT, input->GetKeyDown(KEY_CAMERA_ROLL_LEFT));
-    camera->input_.SetKey(Toybox::KM_CAMERA_ROLL_RIGHT, input->GetKeyDown(KEY_CAMERA_ROLL_RIGHT));
+    camera->UpdateControls(input);
+    camera->SetControl(Toybox::KM_CAMERA_MOVE, Toybox::ControlMap::Test("Camera.Move", input));
+    camera->SetControl(Toybox::KM_CAMERA_FORWARD, Toybox::ControlMap::Test("Camera.Forward", input));
+    camera->SetControl(Toybox::KM_CAMERA_BACKWARD, Toybox::ControlMap::Test("Camera.Backward", input));
+    camera->SetControl(Toybox::KM_CAMERA_PAN_LEFT, Toybox::ControlMap::Test("Camera.PanLeft", input));
+    camera->SetControl(Toybox::KM_CAMERA_PAN_RIGHT, Toybox::ControlMap::Test("Camera.PanRight", input));
+    camera->SetControl(Toybox::KM_CAMERA_ROLL_LEFT, Toybox::ControlMap::Test("Camera.RollLeft", input));
+    camera->SetControl(Toybox::KM_CAMERA_ROLL_RIGHT, Toybox::ControlMap::Test("Camera.RollRight", input));
 
     camera->UpdateCamera(time_step);
 }

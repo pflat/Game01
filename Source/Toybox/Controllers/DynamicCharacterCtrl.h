@@ -2,7 +2,7 @@
 
 #include "../Core/IncGuards.h"
 #include "../Core/ToyboxDefs.h"
-#include "../Input/InputState.h"
+#include "../Input/Controls.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Core/Context.h>
@@ -24,7 +24,7 @@ class DynamicCharacter : public Urho3D::LogicComponent
 {
     URHO3D_OBJECT(DynamicCharacter, LogicComponent);
 
-    InputState input;
+    Controls controls_;
 
     unsigned frame_counter;
 
@@ -43,6 +43,9 @@ public:
     void HandleNodeCollision(Urho3D::StringHash event_type, Urho3D::VariantMap& event_data);
 
     Urho3D::Node* GetCameraNode() { return camera_node; }
+
+    void UpdateControls(Urho3D::Input* input) { controls_.Update(input); }
+    void SetControl(int control, bool active) { controls_.Set(control, active); }
 };
 
 }

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "../Core/IncGuards.h"
-#include "../Input/InputState.h"
+#include "../Input/Controls.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Core/Context.h>
@@ -60,12 +60,15 @@ public:
     void SetTarget(Urho3D::Node* target, bool immediate = false);
 //	void Clear();
 
+    void UpdateControls(Urho3D::Input* input) { controls_.Update(input); }
+    void SetControl(int control, bool active) { controls_.Set(control, active); }
+
     void UpdateCamera(float time_step);
     Urho3D::Node* GetLookAtNode() { return lookat_node_; }
 
-public:
+private:
 
-    InputState input_;
+    Controls controls_;
 
 private:
 
@@ -82,7 +85,7 @@ private:
 
 	///  Camera mode is used to switch to free movement, without changing camera type
 	///  (free | follow)
-    unsigned camera_mode_;  
+    unsigned camera_mode_;
 
 	CameraSettings general_settings_;
 	CameraSettings vehicle_settings_;

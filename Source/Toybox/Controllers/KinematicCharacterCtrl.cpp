@@ -94,11 +94,11 @@ void KinematicCharacterCtrl::ProcessInput(float time_step)
     //  1st stage - calculate movement direction from inputs only.
     //  In this stage, velocity vector is treated as a direction only (it will be normalized in the end).
     //  Forward / backward.
-    if (input_.IsKeyDown(KM_CHARACTER_FORWARD))
+    if (controls_.IsDown(KM_CHARACTER_FORWARD))
     {
         velocity_.z_ = 1.0f;
     }
-    else if (input_.IsKeyDown(KM_CHARACTER_BACKWARD))
+    else if (controls_.IsDown(KM_CHARACTER_BACKWARD))
     {
         velocity_.z_ = -1.0f;
     }
@@ -108,11 +108,11 @@ void KinematicCharacterCtrl::ProcessInput(float time_step)
     }
 
     //  Strafe.
-    if (input_.IsKeyDown(KM_CHARACTER_STRAFE_LEFT))
+    if (controls_.IsDown(KM_CHARACTER_STRAFE_LEFT))
     {
         velocity_.x_ = -1.0f;
     }
-    else if (input_.IsKeyDown(KM_CHARACTER_STRAFE_RIGHT))
+    else if (controls_.IsDown(KM_CHARACTER_STRAFE_RIGHT))
     {
         velocity_.x_ = 1.0f;
     }
@@ -133,11 +133,11 @@ void KinematicCharacterCtrl::ProcessInput(float time_step)
     //  the different axis.
     //  If the character moved at the same speed in all axis, this would not be necessary.
     //  Forward / backward.
-    if (input_.IsKeyDown(KM_CHARACTER_FORWARD))
+    if (controls_.IsDown(KM_CHARACTER_FORWARD))
     {
         velocity_.z_ = Urho3D::Sin(angle) * forward_speed_;
     }
-    else if (input_.IsKeyDown(KM_CHARACTER_BACKWARD))
+    else if (controls_.IsDown(KM_CHARACTER_BACKWARD))
     {
         velocity_.z_ = Urho3D::Sin(angle) * back_speed_;
     }
@@ -147,7 +147,7 @@ void KinematicCharacterCtrl::ProcessInput(float time_step)
     }
 
     //  Strafe.
-    if (input_.IsKeyDown(KM_CHARACTER_STRAFE_LEFT) || input_.IsKeyDown(KM_CHARACTER_STRAFE_RIGHT))
+    if (controls_.IsDown(KM_CHARACTER_STRAFE_LEFT) || controls_.IsDown(KM_CHARACTER_STRAFE_RIGHT))
     {
         velocity_.x_ = Urho3D::Cos(angle) * strafe_speed_;
     }
@@ -157,7 +157,7 @@ void KinematicCharacterCtrl::ProcessInput(float time_step)
     }
 
     //  Jump.
-    if (input_.IsKeyDown(KM_CHARACTER_JUMP))
+    if (controls_.IsDown(KM_CHARACTER_JUMP))
     {
         if (OnGround() || air_time_ < 0.2f)
         {
@@ -171,20 +171,20 @@ void KinematicCharacterCtrl::ProcessInput(float time_step)
     }
 
     //  Walk/run modifier.
-    if (input_.IsKeyDown(KM_CHARACTER_WALK))
+    if (controls_.IsDown(KM_CHARACTER_WALK))
     {
         velocity_.z_ *= run_mul_;
         velocity_.x_ *= run_mul_;
     }
 
     //  Rotation.
-    if (input_.IsKeyDown(KM_CHARACTER_TURN_LEFT))
+    if (controls_.IsDown(KM_CHARACTER_TURN_LEFT))
     {
         rotation_ -= rotation_step_;
         if (rotation_ < -180)
             rotation_ = 360.0f + rotation_;
     }
-    else if (input_.IsKeyDown(KM_CHARACTER_TURN_RIGHT))
+    else if (controls_.IsDown(KM_CHARACTER_TURN_RIGHT))
     {
         rotation_ += rotation_step_;
         if (rotation_ > 180)
@@ -438,7 +438,7 @@ void KinematicCharacterCtrl::FixedUpdate(float time_step)
     }
 
     //  Debug - TO BE REMOVED
-    PrintState();
+    //PrintState();
     prev_state = state_;
     ++frame_counter;
 }

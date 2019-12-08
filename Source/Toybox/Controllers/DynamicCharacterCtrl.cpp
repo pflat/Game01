@@ -65,13 +65,13 @@ void DynamicCharacter::FixedUpdate(float time_step)
     Urho3D::Quaternion body_rot = body->GetRotation();
 
     Urho3D::Vector3 velocity;
-    if (input.IsKeyDown(KM_CHARACTER_FORWARD))
+    if (controls_.IsDown(KM_CHARACTER_FORWARD))
         velocity += Urho3D::Vector3::FORWARD;
-    if (input.IsKeyDown(KM_CHARACTER_BACKWARD))
+    if (controls_.IsDown(KM_CHARACTER_BACKWARD))
         velocity += Urho3D::Vector3::BACK;
-    if (input.IsKeyDown(KM_CHARACTER_STRAFE_LEFT))
+    if (controls_.IsDown(KM_CHARACTER_STRAFE_LEFT))
         velocity += Urho3D::Vector3::LEFT;
-    if (input.IsKeyDown(KM_CHARACTER_STRAFE_RIGHT))
+    if (controls_.IsDown(KM_CHARACTER_STRAFE_RIGHT))
         velocity += Urho3D::Vector3::RIGHT;
 
     velocity.Normalize();

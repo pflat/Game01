@@ -16,37 +16,40 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game01.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\AxisCtrlSystem.cpp" />
     <ClCompile Include="Source\Toybox\Controllers\CameraCtrl.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\CarCtrl.cpp" />
     <ClCompile Include="Source\Toybox\Controllers\DynamicCharacterCtrl.cpp" />
     <ClCompile Include="Source\Toybox\Controllers\KinematicCharacterCtrl.cpp" />
-    <ClCompile Include="Source\Toybox\Controllers\SpaceshipCtrl.cpp" />
-    <ClCompile Include="Source\Toybox\Controllers\VehicleCtrlSystem.cpp" />
+    <ClCompile Include="Source\Toybox\Controllers\ShipCtrl.cpp" />
     <ClCompile Include="Source\Toybox\Controllers\VehicleWeaponCtrl.cpp" />
-    <ClCompile Include="Source\Toybox\Controllers\WheeledVehicleCtrl.cpp" />
     <ClCompile Include="Source\Toybox\Core\Debug.cpp" />
     <ClCompile Include="Source\Toybox\Core\Toybox.cpp" />
     <ClCompile Include="Source\Toybox\Engine\Scene.cpp" />
-    <ClCompile Include="Source\Toybox\Input\InputState.cpp" />
+    <ClCompile Include="Source\Toybox\Input\ControlMap.cpp" />
+    <ClCompile Include="Source\Toybox\Input\Controls.cpp" />
     <ClCompile Include="Source\Toybox\Math\Vector3Ext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game01.h" />
     <ClInclude Include="Source\Settings.h" />
+    <ClInclude Include="Source\Toybox\Controllers\AxisCtrlSystem.h" />
     <ClInclude Include="Source\Toybox\Controllers\CameraCtrl.h" />
+    <ClInclude Include="Source\Toybox\Controllers\CarCtrl.h" />
     <ClInclude Include="Source\Toybox\Controllers\DynamicCharacterCtrl.h" />
     <ClInclude Include="Source\Toybox\Controllers\KinematicCharacterCtrl.h" />
     <ClInclude Include="Source\Toybox\Controllers\KinematicCharControls.h" />
     <ClInclude Include="Source\Toybox\Controllers\KinematicCharState.h" />
-    <ClInclude Include="Source\Toybox\Controllers\SpaceshipCtrl.h" />
-    <ClInclude Include="Source\Toybox\Controllers\VehicleCtrlSystem.h" />
+    <ClInclude Include="Source\Toybox\Controllers\ShipCtrl.h" />
     <ClInclude Include="Source\Toybox\Controllers\VehicleWeaponCtrl.h" />
-    <ClInclude Include="Source\Toybox\Controllers\WheeledVehicleCtrl.h" />
     <ClInclude Include="Source\Toybox\Core\Debug.h" />
     <ClInclude Include="Source\Toybox\Core\IncGuards.h" />
     <ClInclude Include="Source\Toybox\Core\Settings.h" />
     <ClInclude Include="Source\Toybox\Core\Toybox.h" />
+    <ClInclude Include="Source\Toybox\Core\ToyboxDefs.h" />
     <ClInclude Include="Source\Toybox\Engine\Scene.h" />
-    <ClInclude Include="Source\Toybox\Input\InputState.h" />
+    <ClInclude Include="Source\Toybox\Input\ControlMap.h" />
+    <ClInclude Include="Source\Toybox\Input\Controls.h" />
     <ClInclude Include="Source\Toybox\Math\Vector3Ext.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

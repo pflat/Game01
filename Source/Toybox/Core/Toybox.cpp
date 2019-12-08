@@ -130,15 +130,25 @@ ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Reso
     ShipCtrl* ship = node->CreateComponent<ShipCtrl>();
     if (xml_elem.HasChild("thrust"))
     {
-        ship->thrust_z_.Set(xml_elem.GetChild("thrust").GetFloat("step"),
+        ship->thrust_z_.Set(AXIS_MODE_LOCAL,
+                            xml_elem.GetChild("thrust").GetFloat("step"),
                             xml_elem.GetChild("thrust").GetFloat("min"),
                             xml_elem.GetChild("thrust").GetFloat("max"),
                             xml_elem.GetChild("thrust").GetFloat("damp"));
         ship->thrust_z_.SetEnable(true);
+
+        ship->thrust_x_.Set(AXIS_MODE_LOCAL,
+                            xml_elem.GetChild("thrust").GetFloat("step"),
+                            xml_elem.GetChild("thrust").GetFloat("min"),
+                            xml_elem.GetChild("thrust").GetFloat("max"),
+                            xml_elem.GetChild("thrust").GetFloat("damp"));
+        ship->thrust_x_.SetEnable(true);
+
     }
     if (xml_elem.HasChild("pitch"))
     {
-        ship->rotate_x_.Set(xml_elem.GetChild("pitch").GetFloat("step"),
+        ship->rotate_x_.Set(AXIS_MODE_LOCAL,
+                            xml_elem.GetChild("pitch").GetFloat("step"),
                             xml_elem.GetChild("pitch").GetFloat("min"),
                             xml_elem.GetChild("pitch").GetFloat("max"),
                             xml_elem.GetChild("pitch").GetFloat("damp"));
@@ -146,7 +156,8 @@ ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Reso
     }
     if (xml_elem.HasChild("yaw"))
     {
-        ship->rotate_y_.Set(xml_elem.GetChild("yaw").GetFloat("step"),
+        ship->rotate_y_.Set(AXIS_MODE_LOCAL,
+                            xml_elem.GetChild("yaw").GetFloat("step"),
                             xml_elem.GetChild("yaw").GetFloat("min"),
                             xml_elem.GetChild("yaw").GetFloat("max"),
                             xml_elem.GetChild("yaw").GetFloat("damp"));
@@ -154,7 +165,8 @@ ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Reso
     }
     if (xml_elem.HasChild("roll"))
     {
-        ship->rotate_z_.Set(xml_elem.GetChild("roll").GetFloat("step"),
+        ship->rotate_z_.Set(AXIS_MODE_LOCAL,
+                            xml_elem.GetChild("roll").GetFloat("step"),
                             xml_elem.GetChild("roll").GetFloat("min"),
                             xml_elem.GetChild("roll").GetFloat("max"),
                             xml_elem.GetChild("roll").GetFloat("damp"));
@@ -165,7 +177,7 @@ ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Reso
     {
         if (child_elem.GetAttribute("name") == "nExhausts")
         {
-            ship->exhausts_node = node->GetChild("nExhausts");
+            ship->exhausts_node_ = node->GetChild("nExhausts");
 
             if (child_elem.HasChild("sound"))
             {

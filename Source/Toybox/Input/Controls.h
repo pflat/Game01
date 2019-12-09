@@ -27,6 +27,8 @@ public:
     bool IsJustDown(int ctrl);
     bool IsJustUp(int ctrl);
 
+    int State() { return controls_; }
+
     void Reset();
 
 private:

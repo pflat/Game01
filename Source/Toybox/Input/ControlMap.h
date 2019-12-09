@@ -17,7 +17,7 @@ class InputControl
 public:
     InputControl(int qualifiers, int key, int button = 0, bool allow_modifiers = false);
 
-    void Set(int qualifiers, int key, int button);
+    void Set(int qualifiers, int key, int button, bool allow_modifiers = false);
 
     bool Test(int qualifiers, int key, int button);
 

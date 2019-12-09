@@ -2,10 +2,12 @@
 	<class value="fighter" />
 	<mass value="40000" />
 	<damp linear="0.95" angular="0.95" friction="0.95" />
-	<thrust step="50.0" min="-1000.0" max="3000.0" damp="50.0" />
-	<pitch step="0.2" min="-1.5" max="1.5" damp="0.1" />
-	<yaw step="0.2" min="-1.5" max="1.5" damp="0.1" />
-	<roll step="0.1" min="-1.0" max="1.0" damp="0.1" />
+	<thrust mode="set" coord="local" step="50.0" min="-1000.0" max="3000.0" damp="50.0" />
+	<strafe mode="action" coord="local" step="150.0" min="-1000.0" max="1000.0" damp="100.0" />
+	<lift mode="action" coord="local" step="15.0" min="-100.0" max="100.0" damp="10.0" />
+	<pitch mode="action" coord="local" step="0.2" min="-1.5" max="1.5" damp="0.1" />
+	<yaw mode="action" coord="local" step="0.2" min="-1.5" max="1.5" damp="0.1" />
+	<roll mode="action" coord="local" step="0.1" min="-1.0" max="1.0" damp="0.1" />
 
 	<model type="static"
 		model="models/vehicles/space/fighter_a02/fighter_a02.mdl"

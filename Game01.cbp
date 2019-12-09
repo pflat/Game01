@@ -162,8 +162,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Source/ControlMap.cpp" />
-		<Unit filename="Source/ControlMap.h" />
 		<Unit filename="Source/Game01.cpp" />
 		<Unit filename="Source/Game01.h" />
 		<Unit filename="Source/Settings.h" />
@@ -189,6 +187,8 @@
 		<Unit filename="Source/Toybox/Core/ToyboxDefs.h" />
 		<Unit filename="Source/Toybox/Engine/Scene.cpp" />
 		<Unit filename="Source/Toybox/Engine/Scene.h" />
+		<Unit filename="Source/Toybox/Input/ControlMap.cpp" />
+		<Unit filename="Source/Toybox/Input/ControlMap.h" />
 		<Unit filename="Source/Toybox/Input/Controls.cpp" />
 		<Unit filename="Source/Toybox/Input/Controls.h" />
 		<Unit filename="Source/Toybox/Math/Vector3Ext.cpp" />

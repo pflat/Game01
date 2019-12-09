@@ -15,14 +15,20 @@ InputControl::InputControl(int qualifiers, int key, int button, bool allow_modif
 {
 	if (button == 0)
 		button_ = 0x8000;
+    if (qualifiers > 0)
+        allow_modifiers = false;
 }
 
 
-void InputControl::Set(int qualifiers, int key, int button)
+void InputControl::Set(int qualifiers, int key, int button, bool allow_modifiers)
 {
     qualifiers_ = qualifiers;
     key_ = key;
     button_ = button;
+    if (qualifiers > 0)
+        allow_modifiers_ = false;
+    else
+        allow_modifiers_ = allow_modifiers;
 }
 
 
@@ -77,6 +83,8 @@ bool InputControl::Test(Urho3D::Input* input)
 void ControlMap::Set(Urho3D::String ctrl, int qualifiers, int key, int button, bool allow_modifiers)
 {
 	controls_[ctrl] = new InputControl(qualifiers, key, button, allow_modifiers);
+	///   ToDo
+	///   Insert or Replace
 }
 
 

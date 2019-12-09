@@ -395,7 +395,7 @@ void KinematicCharacterCtrl::MoveAndSlide(const Urho3D::Vector3& pos, const Urho
         }
     }
 
-    //  In case of probles try uncommenting this line.
+    //  In case of problems try uncommenting this line.
     //GroundCheck(pos, vm, cstate);
 }
 

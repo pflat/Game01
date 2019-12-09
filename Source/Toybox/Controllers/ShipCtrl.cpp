@@ -59,121 +59,37 @@ void ShipCtrl::FixedUpdate(float time_step)
     //  Thrust in local X axis.
     if (thrust_x_.Enabled())
     {
-        /*if (controls_.IsDown(KM_VEHICLE_THRUST_X_MAX))
-        {
-            thrust_x_.SetMax();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_THRUST_X_STOP))
-        {
-            thrust_x_.Stop();
-        }
-        else */if (controls_.IsDown(KM_VEHICLE_THRUST_X_INC))
-        {
-            thrust_x_.Increase();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_THRUST_X_DEC))
-        {
-            thrust_x_.Decrease();
-        }
-        thrust_x_.Update();
+        thrust_x_.Update(controls_.State() >> 0);
     }
 
     //  Thrust in local Y axis.
     if (thrust_y_.Enabled())
     {
-        /*if (controls_.IsControlDown(KM_VEHICLE_THRUST_Y_MAX))
-        {
-            thrust_y_.SetMax();
-        }
-        else if (controls_.IsControlDown(KM_VEHICLE_THRUST_Y_STOP))
-        {
-            thrust_y_.Stop();
-        }
-        else */if (controls_.IsDown(KM_VEHICLE_THRUST_Y_INC))
-        {
-            thrust_y_.Increase();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_THRUST_Y_DEC))
-        {
-            thrust_y_.Decrease();
-        }
-        thrust_y_.Update();
+        thrust_y_.Update(controls_.State() >> 10);
     }
 
     //  Thrust in local Z axis.
     if (thrust_z_.Enabled())
     {
-        if (controls_.IsDown(KM_VEHICLE_THRUST_Z_MAX))
-        {
-            thrust_z_.SetMax();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_THRUST_Z_STOP))
-        {
-            thrust_z_.Stop();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_THRUST_Z_INC))
-        {
-            thrust_z_.Increase();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_THRUST_Z_DEC))
-        {
-            thrust_z_.Decrease();
-        }
-        thrust_z_.Update();
+        thrust_z_.Update(controls_.State() >> 20);
     }
 
     //  Rotate in local X axis - pitch.
     if (rotate_x_.Enabled())
     {
-        if (controls_.IsDown(KM_VEHICLE_ROT_X_DEC))
-        {
-            rotate_x_.SetMin();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_ROT_X_INC))
-        {
-            rotate_x_.SetMax();
-        }
-        else
-        {
-            rotate_x_.Stop();
-        }
-        rotate_x_.Update();
+        rotate_x_.Update(controls_.State() >> 5);
     }
 
     //  Rotate in local Y axis - yaw.
     if (rotate_y_.Enabled())
     {
-        if (controls_.IsDown(KM_VEHICLE_ROT_Y_DEC))
-        {
-            rotate_y_.SetMin();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_ROT_Y_INC))
-        {
-            rotate_y_.SetMax();
-        }
-        else
-        {
-            rotate_y_.Stop();
-        }
-        rotate_y_.Update();
+        rotate_y_.Update(controls_.State() >> 15);
     }
 
     //  Rotate in local Z axis - roll.
     if (rotate_z_.Enabled())
     {
-        if (controls_.IsDown(KM_VEHICLE_ROT_Z_DEC))
-        {
-            rotate_z_.SetMax();
-        }
-        else if (controls_.IsDown(KM_VEHICLE_ROT_Z_INC))
-        {
-            rotate_z_.SetMin();
-        }
-        else
-        {
-            rotate_z_.Stop();
-        }
-        rotate_z_.Update();
+        rotate_z_.Update(controls_.State() >> 25);
     }
 /*
     Urho3D::Vector3 forward_dir = (body->GetRotation() * Urho3D::Vector3::FORWARD).Normalized();
@@ -190,7 +106,6 @@ void ShipCtrl::FixedUpdate(float time_step)
                              thrust_z_.Velocity(Urho3D::Vector3::FORWARD, ship_rot)) * time_step);
     //  Add some random variation to the movement.
     //  Controlled by pilot skill.
-
     speed = (body_->GetPosition() - last_pos).Length() / time_step;
     last_pos = body_->GetPosition();
 

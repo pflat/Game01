@@ -15,8 +15,21 @@ namespace Toybox
 
 enum AxisCtrlMode
 {
-    AXIS_MODE_LOCAL = 1,
-    AXIS_MODE_WORLD
+    AXIS_MODE_SET = 1 << 0,
+    AXIS_MODE_ACTION = 1 << 1,
+    AXIS_COORD_LOCAL = 1 << 16,
+    AXIS_COORD_WORLD = 1 << 17
+};
+
+
+///  Very important to keep in sync with Controls.h
+enum AxisAction
+{
+    INCREASE = 1 << 0,
+    DECREASE = 1 << 1,
+    SET_MAX = 1 << 2,
+    SET_MIN = 1 << 3,
+    STOP = 1 << 4
 };
 
 
@@ -27,7 +40,7 @@ public:
 
     AxisCtrlSystem() :
             enabled_(false),
-            mode_(AXIS_MODE_LOCAL),
+            mode_(AxisCtrlMode(AXIS_MODE_ACTION | AXIS_COORD_LOCAL)),
             step_(1),
             min_(-10),
             max_(10),
@@ -36,9 +49,15 @@ public:
             current_(0)
     {}
 
+    AxisCtrlMode Set(const Urho3D::String& mode, const Urho3D::String& coord);
+
+    void Set(float step, float min, float max, float damp);
+
     void Set(AxisCtrlMode mode, float step, float min, float max, float damp);
 
     void Update();
+
+    void Update(int action);
 
     void SetEnable(bool enabled) { enabled_ = enabled; }
 
@@ -63,7 +82,8 @@ public:
 private:
     ///  System enable state.
     bool enabled_;
-    ///  Operation mode. Local space (airplane thrust), or world space (submarine or hot air balloon altitude).
+    ///  Operation mode. ...
+    ///  Coordinate mode. Local space (airplane thrust), or world space (submarine or hot air balloon altitude).
     AxisCtrlMode mode_;
     ///  Amount changed with every increase/decrease of the system.
     float step_;

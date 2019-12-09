@@ -341,8 +341,8 @@ void KinematicCharacterCtrl::MoveAndSlide(const Urho3D::Vector3& pos, const Urho
             else if (fground < -slope_factor_)
             {
                 on_ceiling = true;
-                //cstate.state_ = KCS_FALLING;
-                //move_completed = true;
+                state_ = KCS_FALLING;
+                move_completed = true;
             }
         }
 

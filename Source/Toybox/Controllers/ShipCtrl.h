@@ -64,12 +64,18 @@ private:
     ///  Cached Urho3D components. Rigid body.
     Urho3D::WeakPtr<Urho3D::RigidBody> body_;
     ///  Cached Urho3D components. Ship material. Used to change exhaust color.
-    Urho3D::WeakPtr<Urho3D::Material> material_;
+    Urho3D::WeakPtr<Urho3D::Material> material_x_;
+    Urho3D::WeakPtr<Urho3D::Material> material_y_;
+    Urho3D::WeakPtr<Urho3D::Material> material_z_;
 public:
     ///  Cached Urho3D components. Exhausts node. Used to change engine sound and particle emissions.
-    Urho3D::WeakPtr<Urho3D::Node> exhausts_node_;
+    Urho3D::WeakPtr<Urho3D::Node> exhausts_x_;
+    Urho3D::WeakPtr<Urho3D::Node> exhausts_y_;
+    Urho3D::WeakPtr<Urho3D::Node> exhausts_z_;
 
-    Urho3D::Sound* engine_sound;
+    Urho3D::WeakPtr<Urho3D::Sound> sound_x_;
+    Urho3D::WeakPtr<Urho3D::Sound> sound_y_;
+    Urho3D::WeakPtr<Urho3D::Sound> sound_z_;
 private:
     float last_thrust_factor;
     Urho3D::Vector3 last_pos;

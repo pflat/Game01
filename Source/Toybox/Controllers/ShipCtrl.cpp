@@ -50,7 +50,7 @@ void ShipCtrl::Start()
     body_ = node_->GetComponent<Urho3D::RigidBody>(true);
 
     Urho3D::StaticModel* model = node_->GetComponent<Urho3D::StaticModel>(true);
-    material_ = model->GetMaterial();
+    material_z_ = model->GetMaterial();
 }
 
 
@@ -113,10 +113,10 @@ void ShipCtrl::FixedUpdate(float time_step)
     float thrust_factor = thrust_z_.Factor();
     if (thrust_factor != last_thrust_factor)
     {
-        material_->SetShaderParameter("MatEmissiveColor", Urho3D::Variant(Urho3D::Vector4(thrust_factor, thrust_factor, thrust_factor, 1.0f)));
+        material_z_->SetShaderParameter("MatEmissiveColor", Urho3D::Variant(Urho3D::Vector4(thrust_factor, thrust_factor, thrust_factor, 1.0f)));
 
         //  Update engine sound.
-        Urho3D::SoundSource3D* sound_source = exhausts_node_->GetComponent<Urho3D::SoundSource3D>();
+        Urho3D::SoundSource3D* sound_source = exhausts_z_->GetComponent<Urho3D::SoundSource3D>();
         if (sound_source)
         {
             if (thrust_factor == 0)
@@ -126,20 +126,20 @@ void ShipCtrl::FixedUpdate(float time_step)
             }
             else
             {
-                if (!sound_source->IsPlaying() && engine_sound)
-                    sound_source->Play(engine_sound);
+                if (!sound_source->IsPlaying() && sound_z_)
+                    sound_source->Play(sound_z_);
 
-                sound_source->SetFrequency(((thrust_factor * 10.0f * 0.04f) + 0.6f) * engine_sound->GetFrequency());
+                sound_source->SetFrequency(((thrust_factor * 10.0f * 0.04f) + 0.6f) * sound_z_->GetFrequency());
             }
             //sound_source->SetGain(Urho3D::Clamp(thrust_factor / 15.0f, 0.0f, 0.75f));
         }
 
         //  Update engine particle generator emission properties.
-        for (unsigned i = 0; i < exhausts_node_->GetNumChildren(); ++i)
+        for (unsigned i = 0; i < exhausts_z_->GetNumChildren(); ++i)
         {
-            if (exhausts_node_->GetChild(i)->GetVar("effect").GetString() == "particle")
+            if (exhausts_z_->GetChild(i)->GetVar("effect").GetString() == "particle")
             {
-                Urho3D::ParticleEmitter* emitter = exhausts_node_->GetChild(i)->GetComponent<Urho3D::ParticleEmitter>();
+                Urho3D::ParticleEmitter* emitter = exhausts_z_->GetChild(i)->GetComponent<Urho3D::ParticleEmitter>();
                 Urho3D::ParticleEffect* effect = emitter->GetEffect();
 
                 if (thrust_factor == 0)
@@ -153,9 +153,9 @@ void ShipCtrl::FixedUpdate(float time_step)
                     effect->SetMaxEmissionRate(Urho3D::Abs(thrust_factor * 600));
                 }
             }
-            else if (exhausts_node_->GetChild(i)->GetVar("effect").GetString() == "ribbon")
+            else if (exhausts_z_->GetChild(i)->GetVar("effect").GetString() == "ribbon")
             {
-                Urho3D::RibbonTrail* ribbon = exhausts_node_->GetChild(i)->GetComponent<Urho3D::RibbonTrail>();
+                Urho3D::RibbonTrail* ribbon = exhausts_z_->GetChild(i)->GetComponent<Urho3D::RibbonTrail>();
 
                 if (thrust_factor == 0)
                 {
@@ -175,7 +175,7 @@ void ShipCtrl::FixedUpdate(float time_step)
 
 void ShipCtrl::AddWeapon(VehicleWeaponCtrl* weapon, const Urho3D::String& slot)
 {
-    Urho3D::Node* slot_node = node_->GetChild("nSlots")->GetChild(slot);
+    Urho3D::Node* slot_node = node_->GetChild("slots")->GetChild(slot);
     if (slot_node)
     {
         if ((slot_node->GetScale().x_ * slot_node->GetScale().y_ * slot_node->GetScale().z_) < 0)

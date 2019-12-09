@@ -185,16 +185,16 @@ ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Reso
 
     for (Urho3D::XMLElement child_elem = xml_elem.GetChild("node"); child_elem; child_elem = child_elem.GetNext("node"))
     {
-        if (child_elem.GetAttribute("name") == "nExhausts")
+        if (child_elem.GetAttribute("name") == "exhausts_z")
         {
-            ship->exhausts_node_ = node->GetChild("nExhausts");
+            ship->exhausts_z_ = node->GetChild("exhausts_z");
 
             if (child_elem.HasChild("sound"))
             {
-                ship->engine_sound = cache->GetResource<Urho3D::Sound>(child_elem.GetChild("sound").GetAttribute("value"));
-                ship->engine_sound->SetLooped(true);
+                ship->sound_z_ = cache->GetResource<Urho3D::Sound>(child_elem.GetChild("sound").GetAttribute("value"));
+                ship->sound_z_->SetLooped(true);
 
-                Urho3D::SoundSource3D* engine_sound_source = node->GetChild("nExhausts")->CreateComponent<Urho3D::SoundSource3D>();
+                Urho3D::SoundSource3D* engine_sound_source = node->GetChild("exhausts_z")->CreateComponent<Urho3D::SoundSource3D>();
                 engine_sound_source->SetSoundType(Urho3D::SOUND_EFFECT);
                 engine_sound_source->SetNearDistance(20);
                 engine_sound_source->SetFarDistance(80);

@@ -60,7 +60,7 @@ public:
     void SetTarget(Urho3D::Node* target, bool immediate = false);
 //	void Clear();
 
-    void UpdateControls(Urho3D::Input* input) { controls_.Update(input); }
+    void UpdateControls(Urho3D::Input* input, float time_step) { controls_.Update(input); }
     void SetControl(int control, bool active) { controls_.Set(control, active); }
 
     void UpdateCamera(float time_step);

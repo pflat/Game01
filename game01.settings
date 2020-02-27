@@ -4,6 +4,11 @@
 		height = "600"
 		fullscreen = "false"
 	/>
+	<video
+		texture_quality = "2"
+		shadows = "true"
+		shadows_quality = "2"
+	/>
 	<camera
 		key_sensitivity = "20.0"
 		mouse_sensitivity = "20.0"
@@ -20,7 +25,8 @@
 			invert_pitch = "false"
 			default_pitch = "5"
 			default_yaw = "0"
-			default_distance = "3"
+			default_distance = "15"
+			distance_old="3"
 		/>
 		<free
 			invert_pitch = "false"

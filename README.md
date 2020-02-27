@@ -6,7 +6,7 @@ Short description will go here.
 
 ## Pre-compiled binaries
 
-Pre-compiled binaries can be found in the releases tab (currently only for Windows, using Direct3D).
+Pre-compiled binaries currently only for Windows, using Direct3D.
 
 ## Building
 
@@ -22,14 +22,14 @@ Get the latest sources from GitHub
 ```sh
 $ git clone -b master https://github.com/urho3d/Urho3D
 ```
-or download and extract the latest stable release (currently 1.7.1).  
-If you get compilation errors when building the master branch, use the latest stable release.
+
+The latest stable release (currently 1.7.1), will not work. The app uses features from the master branch.
 
 Assuming the following folders:
 - <URHO3D_SOURCE> : the folder where the library sources are extracted (e.g. ~/Urho3D)
 - <URHO3D_INSTALL> : the folder where the library will be installed (e.g. ~/Libs/Urho3D)
 ___
-- Linux
+- Linux (to validate)
 ```sh
 $ cd <URHO3D_SOURCE>
 $ mkdir build
@@ -49,25 +49,23 @@ I didn't installed the following ones:
 - libXinerama-devel
 - libXScrnSaver-devel
 ___
-- MinGW
+- MinGW (to validate)
 ```sh
 $ cd <URHO3D_SOURCE>
 $ mkdir build
 $ cd build
-$ cmake ../ -G"MinGW Makefiles" -DMINGW=1 -DURHO3D_LIB_TYPE=SHARED -DCMAKE_BUILD_TYPE=Release -DMINGW_PREFIX=<PATH_TO_MINGW_BIN> -DCMAKE_INSTALL_PREFIX=<URHO3D_INSTALL>
+$ cmake ../ -G"MinGW Makefiles" -DMINGW=1 -DURHO3D_LIB_TYPE=SHARED -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<URHO3D_INSTALL>
 $ mingw32-make
 $ mingw32-make install
 ```
-
-If the MinGW binaries are in the PATH environment variable, the MINGW_PREFIX should not be used.
 ___
-- Visual Studio 2012
+- Visual Studio 2015
 ```sh
 $ cd <URHO3D_SOURCE>
 $ mkdir build
 $ cd build
-$ cmake ../ -G"Visual Studio 11 2012" -DVS=11 -DURHO3D_LIB_TYPE=SHARED -DCMAKE_INSTALL_PREFIX=<URHO3D_INSTALL>
-$ cmake --build . --target ALL_BUILD --config Release
+$ cmake ../ -G"Visual Studio 14" -A x64 -DURHO3D_LIB_TYPE=SHARED -DURHO3D_WIN32_CONSOLE=0 -DCMAKE_INSTALL_PREFIX=<URHO3D_INSTALL>
+$ cmake --build . --target ALL_BUILD --config Release -j 2
 $ cmake --build . --target INSTALL --config Release
 ```
 ___
@@ -84,8 +82,8 @@ Clone the project to the local hard drive.
 $ git clone -b master https://gitlab.com/pflat/Game01
 ```
 
-Build and install the demo
-- Linux
+Build and install the game. :)
+- Linux  (to validate)
 ```sh
 $ cd Game01
 $ mkdir build
@@ -95,7 +93,7 @@ $ make
 $ make install
 ```
 
-- MinGW
+- MinGW  (to validate)
 ```sh
 $ cd Game01
 $ mkdir build
@@ -105,17 +103,17 @@ $ mingw32-make
 $ mingw32-make install
 ```
 
-- Visual Studio 2012
+- Visual Studio 2015  (to validate)
 ```sh
 $ cd Game01
 $ mkdir build
 $ cd build
-$ cmake ../ -G"Visual Studio 11 2012" -DURHO3D_HOME=<URHO3D_INSTALL> -DCMAKE_INSTALL_PREFIX=<GAME01_INSTALL>
+$ cmake ../ -G"Visual Studio 14" -A x64 -DURHO3D_HOME=<URHO3D_INSTALL> -DCMAKE_INSTALL_PREFIX=<GAME01_INSTALL>
 $ cmake --build . --target Game01 --config Release
 $ cmake --build . --target INSTALL --config Release
 ```
 
-Or, after step 4, open the project created by CMake with Visual Studio 2012, and build from the IDE.
+Or, after step 4, open the project created by CMake with Visual Studio 2015, and build from the IDE.
 
 ## Keeping the code up-to-date
 
@@ -142,7 +140,7 @@ $ Game01.exe
 
 ## Controls
 
-- In space:
+- Spaceship:
   - W / S - Ship pitch
   - A / D - Ship yaw
   - Q / E - Ship roll
@@ -151,7 +149,12 @@ $ Game01.exe
   - BACKSPACE - Stop
   - PageUp / PageDown - Change ship
 
-- On ground:
+- Car:
+  - W / S - Accelerate / Deaccelerate
+  - A / D - Turn left / right
+  - SPACE - Handbrake
+
+- Character:
   - W / S - Walk forward / backward
   - A / D - Turn left / right
   - Q / E - Strafe left / right

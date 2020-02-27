@@ -56,7 +56,7 @@ public:
 
     ///  \todo  Add methods to get/set all previous values individually.
 
-    void UpdateControls(Urho3D::Input* input) { controls_.Update(input); }
+    void UpdateControls(Urho3D::Input* input, float time_step) { controls_.Update(input); }
     void SetControl(int control, bool active) { controls_.Set(control, active); }
 
     ///  Returns the camera node. This can be used as a target node for the camera.

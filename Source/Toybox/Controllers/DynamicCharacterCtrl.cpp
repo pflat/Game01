@@ -11,9 +11,9 @@ namespace Toybox
 
 DynamicCharacter::DynamicCharacter(Urho3D::Context* context) :
     Urho3D::LogicComponent(context),
-    frame_counter(0),
-    body(0),
-    camera_node(0)
+    frame_counter(0)
+    //body(0),
+    //camera_node(0)
 {
     SetUpdateEventMask(Urho3D::USE_FIXEDUPDATE);
 }

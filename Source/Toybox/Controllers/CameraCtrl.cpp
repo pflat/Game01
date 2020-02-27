@@ -22,7 +22,7 @@ CameraCtrl::CameraCtrl(Urho3D::Context* context) :
     retarget_timer_(0.0f),
     reset_timer_(0.0f)
 {
-    SetUpdateEventMask(0);
+    SetUpdateEventMask(Urho3D::USE_NO_EVENT);
 }
 
 

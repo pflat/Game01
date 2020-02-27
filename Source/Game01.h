@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+//#include <vector>
 
 #include "Toybox/Core/IncGuards.h"
 #include "Toybox/Core/Toybox.h"
@@ -33,8 +33,8 @@ class Game01 : public Urho3D::Application
 
 	///  Space scene objects
     Urho3D::WeakPtr<Toybox::Scene> sector;
-	std::vector<Urho3D::WeakPtr<Toybox::ShipCtrl> > ships;
-	//Urho3D::Vector<Urho3D::WeakPtr<Toybox::ShipCtrl> > ships;
+	//std::vector<Urho3D::WeakPtr<Toybox::ShipCtrl> > ships;
+	Urho3D::Vector<Urho3D::WeakPtr<Toybox::ShipCtrl> > ships;
     unsigned num_ships;
     unsigned active_ship;
 
@@ -42,10 +42,12 @@ class Game01 : public Urho3D::Application
     Urho3D::WeakPtr<Toybox::Scene> zone;
     Urho3D::WeakPtr<Toybox::KinematicCharacterCtrl> kJulia;
     Urho3D::WeakPtr<Toybox::DynamicCharacter> dJulia;
+    Urho3D::WeakPtr<Toybox::CarCtrl> apc;
 	Urho3D::WeakPtr<Urho3D::Node> terrain_node;
     Urho3D::WeakPtr<Urho3D::CollisionShape> cube_shape1;
     Urho3D::WeakPtr<Urho3D::CollisionShape> cube_shape2;
     Urho3D::WeakPtr<Urho3D::CollisionShape> cube_shape3;
+    Urho3D::WeakPtr<Urho3D::CollisionShape> cube_shape4;
 
 public:
 

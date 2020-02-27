@@ -1,0 +1,9 @@
+<material>
+	<technique name="Techniques/DiffNormal.xml" />
+	<texture name="textures/vehicles/ground/apc_a01/apc_a01_d.dds" unit="diffuse" />
+	<texture name="textures/vehicles/ground/apc_a01/apc_a01_n.dds" unit="normal" />
+	<parameter name="MatDiffColor" value="0.64 0.64 0.64 1" />
+	<parameter name="MatSpecColor" value="0.5 0.5 0.5 50" />
+	<cull value="none" />
+	<shadowcull value="none" />
+</material>

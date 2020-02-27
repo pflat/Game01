@@ -28,6 +28,7 @@ public:
     bool IsJustUp(int ctrl);
 
     int State() { return controls_; }
+    bool Test(int ctrl) { return (controls_ & ctrl) == ctrl; }
 
     void Reset();
 

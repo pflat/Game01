@@ -1,5 +1,7 @@
 #include "../Core/Toybox.h"
 #include "../Core/ToyboxDefs.h"
+#include "../Core/IO.h"
+#include "../Core/Debug.h"
 
 THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Scene/Scene.h>
@@ -14,6 +16,7 @@ THIRD_PARTY_GUARDS_BEGIN
 #include <Urho3D/Graphics/ParticleEffect.h>
 #include <Urho3D/Physics/RigidBody.h>
 #include <Urho3D/Physics/CollisionShape.h>
+#include <Urho3D/Physics/RaycastVehicle.h>
 #include <Urho3D/Audio/SoundSource3D.h>
 THIRD_PARTY_GUARDS_END
 
@@ -21,9 +24,15 @@ THIRD_PARTY_GUARDS_END
 namespace Toybox
 {
 
-void Init()
+void Init(Urho3D::Context* context)
 {
-
+    CameraCtrl::RegisterObject(context);
+    ShipCtrl::RegisterObject(context);
+    CarCtrl::RegisterObject(context);
+    VehicleWeaponCtrl::RegisterObject(context);
+    KinematicCharacterCtrl::RegisterObject(context);
+    DynamicCharacter::RegisterObject(context);
+    Scene::RegisterObject(context);
 }
 
 
@@ -37,7 +46,7 @@ Scene* LoadScene(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Resour
     Urho3D::Node* node = scene->CreateChild();
 
 	//  Load common node definitions
-	LoadNode(node, xml_elem, cache);
+	IO::LoadNode(node, xml_elem, cache);
 
 	//  Create Sector component and set sector specific properties
     Scene* sector = node->CreateComponent<Scene>();
@@ -91,96 +100,88 @@ Scene* LoadScene(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Resour
 
 
 //  ok
-ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache)
+ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::ResourceCache* cache, Urho3D::Scene* scene, Urho3D::Node* node)
 {
+    if (scene != 0 && node == 0)
+        //  Create component root node
+        node = scene->CreateChild();
+    else if (node == 0)
+        return 0;
+
     Urho3D::XMLFile* xml_file = cache->GetResource<Urho3D::XMLFile>(file);
     const Urho3D::XMLElement& xml_elem = xml_file->GetRoot();
 
-    //  Create component root node
-    Urho3D::Node* node = scene->CreateChild();
+	//  Load node tree
+    IO::LoadNode(node, xml_elem, cache);
 
-	//  Load common node definitions
-    LoadNode(node, xml_elem, cache);
-
-	//  Define RigidBody component
-    Urho3D::RigidBody* body = node->CreateComponent<Urho3D::RigidBody>();
-    if (xml_elem.HasChild("mass"))
-        body->SetMass(xml_elem.GetChild("mass").GetFloat("value"));
-    else
-        body->SetMass(1.0f);
-
-    if (xml_elem.HasChild("damp"))
+    Urho3D::RigidBody* body = node->GetComponent<Urho3D::RigidBody>(true);
+    if (body != 0)
     {
-        body->SetLinearDamping(xml_elem.GetChild("damp").GetFloat("linear"));
-        body->SetAngularDamping(xml_elem.GetChild("damp").GetFloat("angular"));
-        body->SetFriction(xml_elem.GetChild("damp").GetFloat("friction"));
-    }
-    else
-    {
-        body->SetLinearDamping(0.5f);
-        body->SetAngularDamping(0.5f);
-        body->SetFriction(0.5f);
+        body->SetCollisionLayer(Toybox::CL_TERRAIN | Toybox::CL_STATIC | Toybox::CL_VEHICLES | Toybox::CL_CHARACTERS);
+        body->SetCollisionEventMode(Urho3D::COLLISION_ALWAYS);
     }
 
-    //body->SetAngularFactor(Urho3D::Vector3::ZERO);
-    body->SetCollisionLayer(1);
-    body->SetCollisionEventMode(Urho3D::COLLISION_ALWAYS);
-
-	//  Create Spaceship component and set ship specific properties
+	//  Create ShipController component and set ship specific properties
     ShipCtrl* ship = node->CreateComponent<ShipCtrl>();
     if (xml_elem.HasChild("strafe"))
     {
-        ship->thrust_x_.Set(xml_elem.GetChild("strafe").GetAttribute("mode"), xml_elem.GetChild("strafe").GetAttribute("coord"));
-        ship->thrust_x_.Set(xml_elem.GetChild("strafe").GetFloat("step"),
-                            xml_elem.GetChild("strafe").GetFloat("min"),
-                            xml_elem.GetChild("strafe").GetFloat("max"),
-                            xml_elem.GetChild("strafe").GetFloat("damp"));
-        ship->thrust_x_.SetEnable(true);
+        ship->mov_x_.Set(xml_elem.GetChild("strafe").GetAttribute("mode"), xml_elem.GetChild("strafe").GetAttribute("coord"));
+        ship->mov_x_.Set(xml_elem.GetChild("strafe").GetFloat("min"),
+                         xml_elem.GetChild("strafe").GetFloat("max"),
+                         xml_elem.GetChild("strafe").GetFloat("step"),
+                         xml_elem.GetChild("strafe").GetFloat("accel"),
+                         xml_elem.GetChild("strafe").GetFloat("damp"));
+        ship->mov_x_.SetEnable(true);
     }
     if (xml_elem.HasChild("lift"))
     {
-        ship->thrust_y_.Set(xml_elem.GetChild("lift").GetAttribute("mode"), xml_elem.GetChild("lift").GetAttribute("coord"));
-        ship->thrust_y_.Set(xml_elem.GetChild("lift").GetFloat("step"),
-                            xml_elem.GetChild("lift").GetFloat("min"),
-                            xml_elem.GetChild("lift").GetFloat("max"),
-                            xml_elem.GetChild("lift").GetFloat("damp"));
-        ship->thrust_y_.SetEnable(true);
+        ship->mov_y_.Set(xml_elem.GetChild("lift").GetAttribute("mode"), xml_elem.GetChild("lift").GetAttribute("coord"));
+        ship->mov_y_.Set(xml_elem.GetChild("lift").GetFloat("min"),
+                         xml_elem.GetChild("lift").GetFloat("max"),
+                         xml_elem.GetChild("lift").GetFloat("step"),
+                         xml_elem.GetChild("lift").GetFloat("accel"),
+                         xml_elem.GetChild("lift").GetFloat("damp"));
+        ship->mov_y_.SetEnable(true);
     }
     if (xml_elem.HasChild("thrust"))
     {
-        ship->thrust_z_.Set(xml_elem.GetChild("thrust").GetAttribute("mode"), xml_elem.GetChild("thrust").GetAttribute("coord"));
-        ship->thrust_z_.Set(xml_elem.GetChild("thrust").GetFloat("step"),
-                            xml_elem.GetChild("thrust").GetFloat("min"),
-                            xml_elem.GetChild("thrust").GetFloat("max"),
-                            xml_elem.GetChild("thrust").GetFloat("damp"));
-        ship->thrust_z_.SetEnable(true);
+        ship->mov_z_.Set(xml_elem.GetChild("thrust").GetAttribute("mode"), xml_elem.GetChild("thrust").GetAttribute("coord"));
+        ship->mov_z_.Set(xml_elem.GetChild("thrust").GetFloat("min"),
+                         xml_elem.GetChild("thrust").GetFloat("max"),
+                         xml_elem.GetChild("thrust").GetFloat("step"),
+                         xml_elem.GetChild("thrust").GetFloat("accel"),
+                         xml_elem.GetChild("thrust").GetFloat("damp"));
+        ship->mov_z_.SetEnable(true);
     }
     if (xml_elem.HasChild("pitch"))
     {
-        ship->rotate_x_.Set(xml_elem.GetChild("pitch").GetAttribute("mode"), xml_elem.GetChild("pitch").GetAttribute("coord"));
-        ship->rotate_x_.Set(xml_elem.GetChild("pitch").GetFloat("step"),
-                            xml_elem.GetChild("pitch").GetFloat("min"),
-                            xml_elem.GetChild("pitch").GetFloat("max"),
-                            xml_elem.GetChild("pitch").GetFloat("damp"));
-        ship->rotate_x_.SetEnable(true);
+        ship->rot_x_.Set(xml_elem.GetChild("pitch").GetAttribute("mode"), xml_elem.GetChild("pitch").GetAttribute("coord"));
+        ship->rot_x_.Set(xml_elem.GetChild("pitch").GetFloat("min"),
+                         xml_elem.GetChild("pitch").GetFloat("max"),
+                         xml_elem.GetChild("pitch").GetFloat("step"),
+                         xml_elem.GetChild("pitch").GetFloat("accel"),
+                         xml_elem.GetChild("pitch").GetFloat("damp"));
+        ship->rot_x_.SetEnable(true);
     }
     if (xml_elem.HasChild("yaw"))
     {
-        ship->rotate_y_.Set(xml_elem.GetChild("yaw").GetAttribute("mode"), xml_elem.GetChild("yaw").GetAttribute("coord"));
-        ship->rotate_y_.Set(xml_elem.GetChild("yaw").GetFloat("step"),
-                            xml_elem.GetChild("yaw").GetFloat("min"),
-                            xml_elem.GetChild("yaw").GetFloat("max"),
-                            xml_elem.GetChild("yaw").GetFloat("damp"));
-        ship->rotate_y_.SetEnable(true);
+        ship->rot_y_.Set(xml_elem.GetChild("yaw").GetAttribute("mode"), xml_elem.GetChild("yaw").GetAttribute("coord"));
+        ship->rot_y_.Set(xml_elem.GetChild("yaw").GetFloat("min"),
+                         xml_elem.GetChild("yaw").GetFloat("max"),
+                         xml_elem.GetChild("yaw").GetFloat("step"),
+                         xml_elem.GetChild("yaw").GetFloat("accel"),
+                         xml_elem.GetChild("yaw").GetFloat("damp"));
+        ship->rot_y_.SetEnable(true);
     }
     if (xml_elem.HasChild("roll"))
     {
-        ship->rotate_z_.Set(xml_elem.GetChild("roll").GetAttribute("mode"), xml_elem.GetChild("roll").GetAttribute("coord"));
-        ship->rotate_z_.Set(xml_elem.GetChild("roll").GetFloat("step"),
-                            xml_elem.GetChild("roll").GetFloat("min"),
-                            xml_elem.GetChild("roll").GetFloat("max"),
-                            xml_elem.GetChild("roll").GetFloat("damp"));
-        ship->rotate_z_.SetEnable(true);
+        ship->rot_z_.Set(xml_elem.GetChild("roll").GetAttribute("mode"), xml_elem.GetChild("roll").GetAttribute("coord"));
+        ship->rot_z_.Set(xml_elem.GetChild("roll").GetFloat("min"),
+                         xml_elem.GetChild("roll").GetFloat("max"),
+                         xml_elem.GetChild("roll").GetFloat("step"),
+                         xml_elem.GetChild("roll").GetFloat("accel"),
+                         xml_elem.GetChild("roll").GetFloat("damp"));
+        ship->rot_z_.SetEnable(true);
     }
 
     for (Urho3D::XMLElement child_elem = xml_elem.GetChild("node"); child_elem; child_elem = child_elem.GetNext("node"))
@@ -207,6 +208,70 @@ ShipCtrl* LoadShip(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::Reso
 }
 
 
+CarCtrl* LoadCar(const Urho3D::String file, Urho3D::ResourceCache* cache, Urho3D::Scene* scene, Urho3D::Node* node)
+{
+    if (scene != 0 && node == 0)
+        //  Create entity tree root node
+        node = scene->CreateChild();
+    else if (node == 0)
+        return 0;
+
+    Urho3D::XMLFile* xml_file = cache->GetResource<Urho3D::XMLFile>(file);
+    const Urho3D::XMLElement& xml_elem = xml_file->GetRoot();
+
+    //  Load node tree
+    IO::LoadNode(node, xml_elem, cache);
+
+    Urho3D::RigidBody* body = node->GetComponent<Urho3D::RigidBody>(true);
+    if (body != 0)
+    {
+        body->SetCollisionLayer(Toybox::CL_TERRAIN | Toybox::CL_STATIC | Toybox::CL_VEHICLES | Toybox::CL_CHARACTERS);
+        //body->SetCollisionEventMode(Urho3D::COLLISION_ALWAYS);
+    }
+
+    //  Create raycast vehicle component
+    Urho3D::RaycastVehicle* vehicle = node->CreateComponent<Urho3D::RaycastVehicle>();
+    vehicle->Init();
+
+    //  Create CarController component and set car specific properties
+    CarCtrl* car = node->CreateComponent<CarCtrl>();
+    car->vehicle_ = vehicle;
+
+    car->Load(xml_elem);
+
+
+    if (xml_elem.HasChild("engine"))
+    {
+        car->mov_z_.Set(xml_elem.GetChild("engine").GetAttribute("mode"), xml_elem.GetChild("engine").GetAttribute("coord"));
+        car->mov_z_.Set(xml_elem.GetChild("engine").GetFloat("min"),
+                        xml_elem.GetChild("engine").GetFloat("max"),
+                        xml_elem.GetChild("engine").GetFloat("step"),
+                        xml_elem.GetChild("engine").GetFloat("accel"),
+                        xml_elem.GetChild("engine").GetFloat("damp"));
+        car->mov_z_.SetEnable(true);
+    }
+
+    if (xml_elem.HasChild("steer"))
+    {
+        car->rot_y_.Set(xml_elem.GetChild("steer").GetAttribute("mode"), xml_elem.GetChild("steer").GetAttribute("coord"));
+        car->rot_y_.Set(xml_elem.GetChild("steer").GetFloat("min"),
+                        xml_elem.GetChild("steer").GetFloat("max"),
+                        xml_elem.GetChild("steer").GetFloat("step"),
+                        xml_elem.GetChild("steer").GetFloat("accel"),
+                        xml_elem.GetChild("steer").GetFloat("damp"));
+        car->rot_y_.SetEnable(true);
+    }
+
+
+    car->handbrake_ = xml_elem.GetChild("handbrake").GetFloat("value");
+    car->in_air_rpm_ = xml_elem.GetChild("in_air_rpm").GetFloat("value");
+    //vehicle->SetInAirRPM(200.0f);
+
+    vehicle->ResetWheels();
+    return car;
+}
+
+
 VehicleWeaponCtrl* LoadWeapon(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache)
 {
     Urho3D::XMLFile* xml_file = cache->GetResource<Urho3D::XMLFile>(file);
@@ -214,7 +279,7 @@ VehicleWeaponCtrl* LoadWeapon(const Urho3D::String file, Urho3D::Scene* scene, U
 
     //  Create weapon node tree
     Urho3D::Node* node = scene->CreateChild();
-    LoadNode(node, xml_elem, cache);
+    IO::LoadNode(node, xml_elem, cache);
 
     //  read weapon specific properties
 
@@ -261,14 +326,19 @@ Urho3D::ParticleEmitter* LoadParticleEmitter(const Urho3D::String file, Urho3D::
 }
 
 
-KinematicCharacterCtrl* LoadKinematicCharacter(const Urho3D::String file, Urho3D::Scene* scene, Urho3D::ResourceCache* cache)
+KinematicCharacterCtrl* LoadKinematicCharacter(const Urho3D::String file, Urho3D::ResourceCache* cache, Urho3D::Scene* scene, Urho3D::Node* node)
 {
+    if (scene != 0 && node == 0)
+        //  Create component root node
+        node = scene->CreateChild();
+    else if (node == 0)
+        return 0;
+
     Urho3D::XMLFile* xml_file = cache->GetResource<Urho3D::XMLFile>(file);
     const Urho3D::XMLElement& xml_elem = xml_file->GetRoot();
 
-    Urho3D::Node* node = scene->CreateChild();
     Urho3D::Node* spin = node->CreateChild();
-    LoadNode(spin, xml_elem, cache);
+    IO::LoadNode(spin, xml_elem, cache);
 /*
     // Create rigidbody, and set zero mass so that the body does NOT becomes dynamic.
     Urho3D::RigidBody* body = node->CreateComponent<Urho3D::RigidBody>();
@@ -316,7 +386,7 @@ DynamicCharacter* LoadDynamicCharacter(const Urho3D::String file, Urho3D::Scene*
     const Urho3D::XMLElement& xml_elem = xml_file->GetRoot();
 
     Urho3D::Node* node = scene->CreateChild();
-    LoadNode(node, xml_elem, cache);
+    IO::LoadNode(node, xml_elem, cache);
 
 
     Urho3D::RigidBody* body = node->CreateComponent<Urho3D::RigidBody>();
@@ -381,87 +451,6 @@ CameraCtrl* CreateCamera(Urho3D::Context* context)
 }
 
 
-//  ok
-void LoadNode(Urho3D::Node* node, const Urho3D::XMLElement& xml_elem, Urho3D::ResourceCache* cache)
-{
-    if (xml_elem.HasAttribute("name"))
-        node->SetName(xml_elem.GetAttribute("name"));
-
-    if (xml_elem.HasChild("model"))
-    {
-        Urho3D::String model_type = xml_elem.GetChild("model").GetAttribute("type");
-        if (model_type.Compare("static") == 0)
-        {
-            //node->SetVar("model", "static");
-            Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();
-            model->SetModel(cache->GetResource<Urho3D::Model>(xml_elem.GetChild("model").GetAttribute("model")));
-            Urho3D::Material* m = cache->GetResource<Urho3D::Material>(xml_elem.GetChild("model").GetAttribute("material"));
-            model->SetMaterial(m->Clone());
-
-            if (xml_elem.GetChild("model").HasAttribute("shadows"))
-            {
-                if (xml_elem.GetChild("model").GetInt("shadows") == 1)
-                    model->SetCastShadows(true);
-                else
-                    model->SetCastShadows(false);
-            }
-
-        }
-        else if (model_type.Compare("animated") == 0)
-        {
-            //node->SetVar("model", "animated");
-            Urho3D::AnimatedModel* model = node->CreateComponent<Urho3D::AnimatedModel>();
-            model->SetModel(cache->GetResource<Urho3D::Model>(xml_elem.GetChild("model").GetAttribute("model")));
-            node->CreateComponent<Urho3D::AnimationController>();
-            Urho3D::Material* m = cache->GetResource<Urho3D::Material>(xml_elem.GetChild("model").GetAttribute("material"));
-            model->SetMaterial(m->Clone());
-
-            if (xml_elem.GetChild("model").HasAttribute("shadows"))
-            {
-                if (xml_elem.GetChild("model").GetInt("shadows") == 1)
-                    model->SetCastShadows(true);
-                else
-                    model->SetCastShadows(false);
-            }
-        }
-        if (xml_elem.GetChild("model").HasAttribute("collision"))
-        {
-            Urho3D::CollisionShape* coll_shape = node->CreateComponent<Urho3D::CollisionShape>();
-            coll_shape->SetConvexHull(cache->GetResource<Urho3D::Model>(xml_elem.GetChild("model").GetAttribute("collision")));
-        }
-    }
-
-
-    if (xml_elem.HasChild("position"))
-        node->SetPosition(xml_elem.GetChild("position").GetVector3("value"));
-    else
-        node->SetPosition(Urho3D::Vector3(0.0f, 0.0f, 0.0f));
-
-    if (xml_elem.HasChild("rotation"))
-        node->SetRotation(xml_elem.GetChild("rotation").GetQuaternion("value"));
-    else
-        node->SetRotation(Urho3D::Quaternion(0.0f, 0.0f, 0.0f));
-
-    if (xml_elem.HasChild("scale"))
-        node->SetScale(xml_elem.GetChild("scale").GetVector3("value"));
-    else
-        node->SetScale(Urho3D::Vector3(1.0f, 1.0f, 1.0f));
-
-    if (xml_elem.HasChild("effect"))
-    {
-        if (xml_elem.GetChild("effect").GetAttribute("type") == "particle")
-            LoadParticleEmitter(xml_elem.GetChild("effect").GetAttribute("value"), node, cache);
-        else if (xml_elem.GetChild("effect").GetAttribute("type") == "ribbon")
-            LoadRibbonTrail(xml_elem.GetChild("effect").GetAttribute("value"), node, cache);
-    }
-
-    for (Urho3D::XMLElement child_source = xml_elem.GetChild("node"); child_source; child_source = child_source.GetNext("node"))
-    {
-        LoadNode(node->CreateChild(), child_source, cache);
-    }
-}
-
-
 //  debug
 void SaveJSON(Urho3D::Context* context, Urho3D::ResourceCache* cache)
 {
@@ -481,5 +470,15 @@ void SaveJSON(Urho3D::Context* context, Urho3D::ResourceCache* cache)
     // Save as xml
     //mat_test->SaveFile("C:/plisa/Projects/Pessoal/Cpp/Urho3D/Game01/data/materials/vehicles/space/test.xml");
 }
+
+
+void SaveTree(Urho3D::Context* context, Urho3D::Node* node)
+{
+    Urho3D::File file_out(context, "C:/plisa/Projects/Pessoal/Cpp/Urho3D/Export/test.xml", Urho3D::FILE_WRITE);
+    node->SaveXML(file_out);
+    //Urho3D::File file_out(context, "C:/plisa/Projects/Pessoal/Cpp/Urho3D/Export/test.json", Urho3D::FILE_WRITE);
+    //node->SaveJSON(file_out);
+}
+
 
 }

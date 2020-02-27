@@ -1,0 +1,104 @@
+<car id="apc_a01" name="APC">
+    <class value="apc" />
+    <engine mode="action" coord="local" min="-2000.0" max="2500.0" step="100.0" accel="0.02" damp="0.2" />
+	<steer mode="action" coord="local" min="-0.16" max="0.16" step="0.02" accel="0.04" damp="0.04" />
+	<brake mode="action" coord="local" min="-150" max="150" step="5" accel="0.5" damp="0.5" />
+	<handbrake value="300" />
+	<in_air_rpm value="50" />
+        	
+	<physics mass="22000" linear_damp="0.2" angular_damp="0.5" friction="0.0" />
+
+	<model type="static"
+		model="models/vehicles/ground/apc_a01/apc_a01.mdl"
+		material="materials/vehicles/ground/apc_a01.xml"
+		collision="models/vehicles/ground/apc_a01/collision.mdl" />
+
+    <node name="node_pilot"
+        position="0.0000000000000000 1.6000001430511475 2.9702939987182617"
+        rotation="-0.0000000000000000 -0.0000000000000000 0.0000000000000000"
+        scale="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+
+    <node name="node_slot_01"
+        position="0.0253268182277679 2.9591720104217529 -1.3347325325012207"
+        rotation="-0.0000000000000000 -0.0000000000000000 0.0000000000000000"
+        scale="1.0000000000000000 1.0000000000000000 1.0000000000000000" />
+
+    <node name="node_wheel_l01"
+        position="-1.3414336442947388 0.8522990942001343 2.8451044559478760"
+        rotation="-0.0000000000000000 -0.0000000000000000 0.0000000000000000"
+        scale="1.7045979499816895 1.7045979499816895 1.7045979499816895">
+        <wheel slot="0" front="1" traction="1" brake="1" handbrake="1" steer="1"
+        	class="to_set" model="vehicles/ground/wheel_a01.xml"
+        	suspension_max_travel="34.092"
+        	suspension_rest_length="0.2"
+        	suspension_stiffness="15.0"
+        	damping_relaxation="1.0"
+        	damping_compression="10.0"
+        	roll_influence="0.20" />
+    </node>
+	<node name="node_wheel_l02"
+        position="-1.3414326906204224 0.8522989153862000 0.2386402487754822"
+        rotation="-0.0000000000000000 -0.0000000000000000 0.0000000000000000"
+        scale="1.7045979499816895 1.7045979499816895 1.7045979499816895">
+        <wheel slot="1" front="0" traction="1" brake="1" handbrake="1" steer="0"
+        	class="to_set" model="vehicles/ground/wheel_a01.xml"
+        	suspension_max_travel="34.092"
+        	suspension_rest_length="0.2"
+        	suspension_stiffness="15.0"
+        	damping_relaxation="1.0"
+        	damping_compression="10.0"
+        	roll_influence="0.20" />
+    </node>
+    <node name="node_wheel_l03"
+        position="-1.3414317369461060 0.8522986769676208 -2.3575148582458496"
+        rotation="-0.0000000000000000 -0.0000000000000000 0.0000000000000000"
+        scale="1.7045979499816895 1.7045979499816895 1.7045979499816895">
+        <wheel slot="2" front="0" traction="1" brake="1" handbrake="0" steer="-1"
+        	class="to_set" model="vehicles/ground/wheel_a01.xml"
+        	suspension_max_travel="34.092"
+        	suspension_rest_length="0.2"
+        	suspension_stiffness="15.0"
+        	damping_relaxation="1.0"
+        	damping_compression="10.0"
+        	roll_influence="0.20" />
+    </node>
+    <node name="node_wheel_r01"
+        position="1.3912078142166138 0.8522996902465820 2.8451054096221924"
+        rotation="-0.0000000000000000 179.9999093863079622 0.0000000000000000"
+        scale="1.7045979499816895 1.7045979499816895 1.7045979499816895">
+        <wheel slot="3" front="1" traction="1" brake="1" handbrake="1" steer="1"
+        	class="to_set" model="vehicles/ground/wheel_a01.xml"
+        	suspension_max_travel="34.092"
+        	suspension_rest_length="0.2"
+        	suspension_stiffness="15.0"
+        	damping_relaxation="1.0"
+        	damping_compression="10.0"
+        	roll_influence="0.20" />
+    </node>
+    <node name="node_wheel_r02"
+        position="1.3912090063095093 0.8522995710372925 0.2386414408683777"
+        rotation="-0.0000000000000000 179.9999093863079622 0.0000000000000000"
+        scale="1.7045979499816895 1.7045979499816895 1.7045979499816895">
+        <wheel slot="4" front="0" traction="1" brake="1" handbrake="1" steer="0"
+        	class="to_set" model="vehicles/ground/wheel_a01.xml"
+        	suspension_max_travel="34.092"
+        	suspension_rest_length="0.2"
+        	suspension_stiffness="15.0"
+        	damping_relaxation="1.0"
+        	damping_compression="10.0"
+        	roll_influence="0.20" />
+    </node>
+    <node name="node_wheel_r03"
+        position="1.3912103176116943 0.8522993922233582 -2.3575136661529541"
+        rotation="-0.0000000000000000 179.9999093863079622 0.0000000000000000"
+        scale="1.7045979499816895 1.7045979499816895 1.7045979499816895">
+        <wheel slot="5" front="0" traction="1" brake="1" handbrake="0" steer="-1"
+        	class="to_set" model="vehicles/ground/wheel_a01.xml"
+        	suspension_max_travel="34.092"
+        	suspension_rest_length="0.2"
+        	suspension_stiffness="15.0"
+        	damping_relaxation="1.0"
+        	damping_compression="10.0"
+        	roll_influence="0.20" />
+    </node>
+</car>

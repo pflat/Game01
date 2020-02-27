@@ -1,0 +1,9 @@
+<wheel id="wheel_a01" name="ATTWheel">
+	<class value="to_set" />
+    <friction_slip value="1000.0" />
+	
+	<model type="static"
+		model="models/vehicles/ground/wheel_a01/wheel_a01.mdl"
+		material="materials/vehicles/ground/apc_a01.xml" />
+
+</wheel>

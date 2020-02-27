@@ -165,8 +165,6 @@
 		<Unit filename="Source/Game01.cpp" />
 		<Unit filename="Source/Game01.h" />
 		<Unit filename="Source/Settings.h" />
-		<Unit filename="Source/Toybox/Controllers/AxisCtrlSystem.cpp" />
-		<Unit filename="Source/Toybox/Controllers/AxisCtrlSystem.h" />
 		<Unit filename="Source/Toybox/Controllers/CameraCtrl.cpp" />
 		<Unit filename="Source/Toybox/Controllers/CameraCtrl.h" />
 		<Unit filename="Source/Toybox/Controllers/CarCtrl.cpp" />
@@ -179,18 +177,23 @@
 		<Unit filename="Source/Toybox/Controllers/ShipCtrl.h" />
 		<Unit filename="Source/Toybox/Controllers/VehicleWeaponCtrl.cpp" />
 		<Unit filename="Source/Toybox/Controllers/VehicleWeaponCtrl.h" />
+		<Unit filename="Source/Toybox/Core/Core.h" />
 		<Unit filename="Source/Toybox/Core/Debug.cpp" />
 		<Unit filename="Source/Toybox/Core/Debug.h" />
+		<Unit filename="Source/Toybox/Core/IO.cpp" />
+		<Unit filename="Source/Toybox/Core/IO.h" />
 		<Unit filename="Source/Toybox/Core/IncGuards.h" />
 		<Unit filename="Source/Toybox/Core/Toybox.cpp" />
 		<Unit filename="Source/Toybox/Core/Toybox.h" />
 		<Unit filename="Source/Toybox/Core/ToyboxDefs.h" />
+		<Unit filename="Source/Toybox/Engine/InputCtrl.cpp" />
+		<Unit filename="Source/Toybox/Engine/InputCtrl.h" />
 		<Unit filename="Source/Toybox/Engine/Scene.cpp" />
 		<Unit filename="Source/Toybox/Engine/Scene.h" />
-		<Unit filename="Source/Toybox/Input/ControlMap.cpp" />
-		<Unit filename="Source/Toybox/Input/ControlMap.h" />
 		<Unit filename="Source/Toybox/Input/Controls.cpp" />
 		<Unit filename="Source/Toybox/Input/Controls.h" />
+		<Unit filename="Source/Toybox/Input/InputMap.cpp" />
+		<Unit filename="Source/Toybox/Input/InputMap.h" />
 		<Unit filename="Source/Toybox/Math/Vector3Ext.cpp" />
 		<Unit filename="Source/Toybox/Math/Vector3Ext.h" />
 		<Extensions>

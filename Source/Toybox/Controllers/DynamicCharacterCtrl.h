@@ -44,7 +44,7 @@ public:
 
     Urho3D::Node* GetCameraNode() { return camera_node; }
 
-    void UpdateControls(Urho3D::Input* input) { controls_.Update(input); }
+    void UpdateControls(Urho3D::Input* input, float time_step) { controls_.Update(input); }
     void SetControl(int control, bool active) { controls_.Set(control, active); }
 };
 
